@@ -8,7 +8,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="kubernetes_pod_operator_example",
+    dag_id="kubernetes_pod_operator_example_2",
     default_args=default_args,
     schedule_interval=None,
     catchup=False,

@@ -92,6 +92,10 @@ def Musinsa_Ranking_Request(request_params: dict):
         sleep_time = random.uniform(2, 5)
         time.sleep(sleep_time)
         
+        ############################
+        #### S3로 로직 변환 필요 ####
+        ############################
+    
         # 디렉토리 생성
         dir_path = os.path.join("/opt/airflow/dags/test_json", "Raw_Data", today_date, code)
         
@@ -119,6 +123,11 @@ def Musinsa_Ranking_Request(request_params: dict):
                 json.dump(response_data, f, ensure_ascii=False, indent=4)
                 
             print(f"Response saved to {file_path}")
+            
+        ############################
+        #### S3로 로직 변환 필요 ####
+        ############################
+        
         else:
             print(f"Failed to fetch data for {request_params}. Status code: {response.status_code}")
  
