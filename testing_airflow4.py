@@ -40,3 +40,4 @@ with DAG(
             'limit_cpu': '500m',
         },
     )
+    parallel_task
