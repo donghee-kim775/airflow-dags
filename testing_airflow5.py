@@ -49,7 +49,7 @@ with DAG(
             name=f'fetch_data_task_{i}',
             namespace='airflow',
             image='ehdgml7755/project4-custom:python-custom',
-            cmds=['python', './pythonscripts/your_script.py'],  # Execute the script from /scripts
+            cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
             arguments=['M', 'AGE_BAND_ALL'],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
