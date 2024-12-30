@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.python.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
 
@@ -49,13 +49,13 @@ with DAG(
             name=f'fetch_data_task_{i}',
             namespace='airflow',
             image='python:3.9-slim',
-            cmds=['python', '-c'],
-            arguments=[f"from __main__ import fetch_data; fetch_data({i})"],
+            cmds=['python', '/scripts/fetch_data.py'],  # Execute the script from /scripts
+            arguments=[str(i)],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
             volumes=[k8s.V1Volume(
                 name='fetch-data-volume',
-                host_path=k8s.V1HostPathVolumeSource(path='/opt/airflow/dags/repo/pythonscript')
+                host_path=k8s.V1HostPathVolumeSource(path='/opt/airflow/dags/repo/pythonscript')  # Host path to the script
             )],
             volume_mounts=[k8s.V1VolumeMount(
                 name='fetch-data-volume',
