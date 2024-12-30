@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
+import time
 
 # DAG 기본 설정
 default_args = {
@@ -29,6 +30,7 @@ with DAG(
         import requests  # 기본 이미지에는 미리 설치되어 있지 않음
         url = f"https://jsonplaceholder.typicode.com/posts/{task_number}"
         response = requests.get(url)
+        time.sleep(10)
         print(f"Task {task_number} fetched data: {response.json()}")
 
     # 병렬 태스크 생성
