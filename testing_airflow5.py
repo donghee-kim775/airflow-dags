@@ -17,6 +17,32 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
+Sexual_Dynamic_Params = [{
+    "SEXUAL" : "F"
+}, {
+    "SEXUAL" : "M"
+}, {
+    "SEXUAL" : "A"
+}
+]
+
+AGE_BAND_Dynamic_Params = [{
+    "AGE_BAND" : "AGE_BAND_MINOR" # 19세 이하
+}, {
+    "AGE_BAND" : "AGE_BAND_20" # 20~24세
+}, {
+    "AGE_BAND" : "AGE_BAND_25" # 25~29세
+}, {
+    "AGE_BAND" : "AGE_BAND_30"
+}, {
+    "AGE_BAND" : "AGE_BAND_35"
+}, {
+    "AGE_BAND" : "AGE_BAND_40"
+}, {
+    "AGE_BAND" : "AGE_BAND_ALL"
+}
+]
+
 # 실행할 Python 함수 정의
 def fetch_data(task_number):
     import requests
@@ -42,17 +68,22 @@ with DAG(
     # Number of dynamic tasks to create
     num_tasks = 3
 
-    # Dynamically create tasks
-    for i in range(1, 2):
-        task = KubernetesPodOperator(
-            task_id=f'fetch_data_task_{i}',
-            name=f'fetch_data_task_{i}',
-            namespace='airflow',
-            image='ehdgml7755/project4-custom:python-custom',
-            cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
-            arguments=['M', 'AGE_BAND_ALL'],  # Pass task_number as an argument to the script
-            is_delete_operator_pod=False,  # Do not delete pod after completion
-            get_logs=True,
+    for i, sexual_dct in enumerate(Sexual_Dynamic_Params):
+        # Sexual Dummy Task
+        sexual_task = DummyOperator(
+            task_id=f"sexual_task_{sexual_dct['SEXUAL']}"
         )
-        
-        start >> task
+        start >> sexual_task
+        for j, age_dct in enumerate(AGE_BAND_Dynamic_Params):
+            task = KubernetesPodOperator(
+                task_id=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
+                name=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
+                namespace='airflow',
+                image='ehdgml7755/project4-custom:python-custom',
+                cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
+                arguments=[sexual_dct["SEXUAL"], age_dct["AGE_BAND"]],  # Pass task_number as an argument to the script
+                is_delete_operator_pod=True,  # Do not delete pod after completion
+                get_logs=True,
+            )
+            sexual_task >> task
+            
