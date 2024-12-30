@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.providers.python.operators.python import PythonOperator
+from airflow.operators.python_operator import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
 
