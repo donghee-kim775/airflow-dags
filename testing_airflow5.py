@@ -53,14 +53,14 @@ with DAG(
             arguments=[str(i)],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
-            volumes=[k8s.V1Volume(
-                name='fetch-data-volume',
-                host_path=k8s.V1HostPathVolumeSource('/home/donghee/airflow_k8s/pythonscripts')  # Host path to the script
-            )],
             volume_mounts=[k8s.V1VolumeMount(
                 name='fetch-data-volume',
-                mount_path='/scripts',  # The directory inside the pod where the script will be mounted
+                mount_path='/scripts',
                 read_only=True
+            )],
+            volumes=[k8s.V1Volume(
+                name='fetch-data-volume',
+                host_path=k8s.V1HostPathVolumeSource(path='/opt/airflow/dags/repo/pythonscript')
             )],
         )
         start >> task
