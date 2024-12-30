@@ -45,12 +45,6 @@ with DAG(
             cmds=['python', '-c'],
             arguments=[f"from __main__ import fetch_data; fetch_data({i})"],
             is_delete_operator_pod=False,  # 작업 완료 후 파드 삭제 안 함
-            resources={
-                'request_memory': '128Mi',
-                'request_cpu': '250m',
-                'limit_memory': '256Mi',
-                'limit_cpu': '500m',
-            },
             get_logs=True,
         )
         task
