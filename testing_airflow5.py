@@ -5,6 +5,7 @@ from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
 from datetime import timedelta
+from kubernetes.client import models as k8s
 
 # DAG 기본 설정
 default_args = {
@@ -34,14 +35,14 @@ with DAG(
     tags=['example', 'k8s', 'dynamic-python'],
 ) as dag:
 
-        # Start
+    # Start task
     start = DummyOperator(
         task_id="start")
 
-    # 동적으로 생성할 태스크 수
+    # Number of dynamic tasks to create
     num_tasks = 3
 
-    # 동적 태스크 생성
+    # Dynamically create tasks
     for i in range(1, num_tasks + 1):
         task = KubernetesPodOperator(
             task_id=f'fetch_data_task_{i}',
@@ -50,7 +51,16 @@ with DAG(
             image='python:3.9-slim',
             cmds=['python', '-c'],
             arguments=[f"from __main__ import fetch_data; fetch_data({i})"],
-            is_delete_operator_pod=False,  # 작업 완료 후 파드 삭제 안 함
+            is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
+            volumes=[k8s.V1Volume(
+                name='fetch-data-volume',
+                host_path=k8s.V1HostPathVolumeSource(path='/opt/airflow/dags/repo/pythonscript')
+            )],
+            volume_mounts=[k8s.V1VolumeMount(
+                name='fetch-data-volume',
+                mount_path='/scripts',  # The directory inside the pod where the script will be mounted
+                read_only=True
+            )],
         )
         start >> task
