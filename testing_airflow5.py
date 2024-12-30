@@ -55,7 +55,7 @@ with DAG(
             get_logs=True,
             volumes=[k8s.V1Volume(
                 name='fetch-data-volume',
-                host_path=k8s.V1HostPathVolumeSource('C:\Users\DCU\Desktop\ubuntu_backup\airflow-dags\pythonscript\fetch_data.py')  # Host path to the script
+                host_path=k8s.V1HostPathVolumeSource('C:/Users/DCU/Desktop/ubuntu_backup/airflow-dags/pythonscript')  # Host path to the script
             )],
             volume_mounts=[k8s.V1VolumeMount(
                 name='fetch-data-volume',
