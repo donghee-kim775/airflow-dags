@@ -43,14 +43,14 @@ with DAG(
     num_tasks = 3
 
     # Dynamically create tasks
-    for i in range(1, num_tasks + 1):
+    for i in range(1, 2):
         task = KubernetesPodOperator(
             task_id=f'fetch_data_task_{i}',
             name=f'fetch_data_task_{i}',
             namespace='airflow',
-            image='python-base:4.0',
-            cmds=['python', '/app/fetch_data.py'],  # Execute the script from /scripts
-            arguments=[str(i)],  # Pass task_number as an argument to the script
+            image='my-python-app:latest',
+            cmds=['python', './pythonscripts/your_script.py'],  # Execute the script from /scripts
+            arguments=['M', 'AGE_BAND_ALL'],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
         )
