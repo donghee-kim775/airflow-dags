@@ -42,6 +42,7 @@ with DAG(
             op_args=[i],
             executor_config={
                 "KubernetesExecutor": {
+                    "namespace": "airflow",
                     "image": "python:3.9-slim",  # Python 기본 이미지
                     "resources": {
                         "requests": {"memory": "128Mi", "cpu": "250m"},
