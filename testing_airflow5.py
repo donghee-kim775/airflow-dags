@@ -1,6 +1,8 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.operators.dummy import DummyOperator
+
 from airflow.utils.dates import days_ago
 from datetime import timedelta
 
@@ -32,6 +34,10 @@ with DAG(
     tags=['example', 'k8s', 'dynamic-python'],
 ) as dag:
 
+        # Start
+    start = DummyOperator(
+        task_id="start")
+
     # 동적으로 생성할 태스크 수
     num_tasks = 3
 
@@ -47,4 +53,4 @@ with DAG(
             is_delete_operator_pod=False,  # 작업 완료 후 파드 삭제 안 함
             get_logs=True,
         )
-        task
+        start >> task
