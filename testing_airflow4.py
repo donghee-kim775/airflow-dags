@@ -20,10 +20,11 @@ with DAG(
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
+    
     parallel_task = KubernetesPodOperator(
         task_id='parallel_task',
         name='parallel-task-pod',
-        namespace='default',
+        namespace='airflow',
         image='python:3.9-slim',
         cmds=['python', '-c'],
         arguments=["""
@@ -40,4 +41,5 @@ with DAG(
             'limit_cpu': '500m',
         },
     )
+    
     parallel_task
