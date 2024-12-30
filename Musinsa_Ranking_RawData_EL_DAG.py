@@ -43,16 +43,9 @@ AGE_BAND_Dynamic_Params = [{
 }
 ]
 
-# 실행할 Python 함수 정의
-def fetch_data(task_number):
-    import requests
-    url = f"https://jsonplaceholder.typicode.com/posts/{task_number}"
-    response = requests.get(url)
-    print(f"Task {task_number} fetched data: {response.json()}")
-
 # DAG 정의
 with DAG(
-    dag_id='k8s_executor_with_dynamic_python_tasks_2',
+    dag_id='Musinsa_Ranking_RawData_EL_DAG',
     default_args=default_args,
     description='Example DAG using dynamic Python tasks in KubernetesExecutor',
     schedule_interval=None,  # 수동 실행
@@ -65,9 +58,6 @@ with DAG(
     start = DummyOperator(
         task_id="start")
 
-    # Number of dynamic tasks to create
-    num_tasks = 3
-
     for i, sexual_dct in enumerate(Sexual_Dynamic_Params):
         # Sexual Dummy Task
         sexual_task = DummyOperator(
@@ -75,7 +65,7 @@ with DAG(
         )
         start >> sexual_task
         for j, age_dct in enumerate(AGE_BAND_Dynamic_Params):
-            task = KubernetesPodOperator(
+            age_task = KubernetesPodOperator(
                 task_id=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
                 name=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
                 namespace='airflow',
@@ -85,5 +75,4 @@ with DAG(
                 is_delete_operator_pod=True,  # Do not delete pod after completion
                 get_logs=True,
             )
-            sexual_task >> task
-            
+            sexual_task >> age_task
