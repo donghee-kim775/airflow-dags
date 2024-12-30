@@ -49,18 +49,10 @@ with DAG(
             name=f'fetch_data_task_{i}',
             namespace='airflow',
             image='python-base:4.0',
-            cmds=['python', '/scripts/fetch_data.py'],  # Execute the script from /scripts
+            cmds=['python', '/app/fetch_data.py'],  # Execute the script from /scripts
             arguments=[str(i)],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
-            volume_mounts=[k8s.V1VolumeMount(
-                name='fetch-data-volume',
-                mount_path='/scripts',
-                read_only=True
-            )],
-            volumes=[k8s.V1Volume(
-                name='fetch-data-volume',
-                host_path=k8s.V1HostPathVolumeSource(path='/home/donghee/airflow_k8s/pythonscripts')
-            )],
         )
+        
         start >> task
