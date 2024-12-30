@@ -60,7 +60,7 @@ with DAG(
             )],
             volumes=[k8s.V1Volume(
                 name='fetch-data-volume',
-                host_path=k8s.V1HostPathVolumeSource(path='/opt/airflow/dags/repo/pythonscript')
+                host_path=k8s.V1HostPathVolumeSource(path='/home/donghee/airflow_k8s/pythonscripts')
             )],
         )
         start >> task
