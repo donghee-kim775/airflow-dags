@@ -7,9 +7,9 @@ import json
 def connect_s3(aws_access_key_id, aws_secret_access_key, region_name):
     s3_client = boto3.client(
         's3', 
-        aws_access_key_id='AKIA46ZDFAAYVKS2BZ66',
-        aws_secret_access_key='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',
-        region_name='ap-northeast-2'
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=region_name
     )
     return s3_client
 
