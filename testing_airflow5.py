@@ -48,7 +48,7 @@ with DAG(
             task_id=f'fetch_data_task_{i}',
             name=f'fetch_data_task_{i}',
             namespace='airflow',
-            image='python:3.9-slim',
+            image='python-base:4.0',
             cmds=['python', '/scripts/fetch_data.py'],  # Execute the script from /scripts
             arguments=[str(i)],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
