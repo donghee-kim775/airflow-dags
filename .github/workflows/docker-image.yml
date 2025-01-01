@@ -3,10 +3,10 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  paths:
-    - Dockerfile
-    - pythonscript/**
-    - .github/workflows/docker-image.yaml
+    paths:
+      - Dockerfile
+      - pythonscript/**
+      - .github/workflows/docker-image.yaml
     
 jobs:
   build-and-push:
