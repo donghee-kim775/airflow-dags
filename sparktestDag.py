@@ -3,7 +3,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 from datetime import datetime
 
 # PySpark 파일 경로 (DAG의 dags/ 폴더 기준)
-PYSPARK_FILE = "/opt/airflow/dags/repo/sparktest.py"
+PYSPARK_FILE = "/opt/airflow/dags/repo/Sparktest.py"
 
 # DAG 정의
 with DAG(
