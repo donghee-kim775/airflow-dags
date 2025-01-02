@@ -55,7 +55,7 @@ def main():
     args = parser.parse_args()
     
     params['gf'] =  args.gf
-    params['ageBand'] = args.agBand
+    params['ageBand'] = args.ageBand
     
     for code in categoryCode:
         response = requests.get(url, headers=headers, params=params)
