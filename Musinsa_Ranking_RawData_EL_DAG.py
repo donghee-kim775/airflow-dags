@@ -26,23 +26,6 @@ Sexual_Dynamic_Params = [{
 }
 ]
 
-AGE_BAND_Dynamic_Params = [{
-    "AGE_BAND" : "AGE_BAND_MINOR" # 19세 이하
-}, {
-    "AGE_BAND" : "AGE_BAND_20" # 20~24세
-}, {
-    "AGE_BAND" : "AGE_BAND_25" # 25~29세
-}, {
-    "AGE_BAND" : "AGE_BAND_30"
-}, {
-    "AGE_BAND" : "AGE_BAND_35"
-}, {
-    "AGE_BAND" : "AGE_BAND_40"
-}, {
-    "AGE_BAND" : "AGE_BAND_ALL"
-}
-]
-
 # DAG 정의
 with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
@@ -66,7 +49,7 @@ with DAG(
             image='ehdgml7755/project4-custom:latest',
             cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
             arguments=[sexual_dct["SEXUAL"]],  # Pass task_number as an argument to the script
-            is_delete_operator_pod=True,  # Do not delete pod after completion
+            is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
         )
         start >> sexual_task
