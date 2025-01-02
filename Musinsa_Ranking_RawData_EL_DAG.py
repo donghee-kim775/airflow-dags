@@ -9,15 +9,15 @@ from kubernetes.client import models as k8s
 
 # DAG 기본 설정
 default_args = {
-    'owner': 'airflow',
+    'owner': 'ehdgml7755@cu.ac.kr',
     'depends_on_past': False,
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retries': 24,
+    'retry_delay': timedelta(minutes=30),
 }
 
-Sexual_Dynamic_Params = [{
+sexual_dynamic_params = [{
     "SEXUAL" : "F"
 }, {
     "SEXUAL" : "M"
@@ -26,30 +26,44 @@ Sexual_Dynamic_Params = [{
 }
 ]
 
+age_band_dynamic_params = [{
+    "AGE_BAND" : "AGE_BAND_ALL"
+}, {
+    "AGE_BAND" : "AGE_BAND_ALL"
+}
+]
+
 # DAG 정의
 with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
     default_args=default_args,
-    description='Example DAG using dynamic Python tasks in KubernetesExecutor',
+    description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval=None,  # 수동 실행
     start_date=days_ago(1),
     catchup=False,
-    tags=['example', 'k8s', 'dynamic-python'],
+    tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
 ) as dag:
 
     # Start task
     start = DummyOperator(
         task_id="start")
-
-    for i, sexual_dct in enumerate(Sexual_Dynamic_Params):
-        sexual_task = KubernetesPodOperator(
-            task_id=f'{sexual_dct["SEXUAL"]}_task',
-            name=f'{sexual_dct["SEXUAL"]}_task',
-            namespace='airflow',
-            image='ehdgml7755/project4-custom:latest',
-            cmds=['python', './pythonscript/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
-            arguments=[sexual_dct["SEXUAL"]],  # Pass task_number as an argument to the script
-            is_delete_operator_pod=False,  # Do not delete pod after completion
-            get_logs=True,
-        )
+    
+    for i, sexual_dct in enumerate(sexual_dynamic_params):
+        sexual_task = DummyOperator(
+            task_id=f'{sexual_dct["SEXUAL"]}_task')
+        
         start >> sexual_task
+        
+        for j, age_band_dct in enumerate(age_band_dynamic_params):
+            ageband_task = KubernetesPodOperator(
+                task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
+                name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
+                namespace='airflow',
+                image='ehdgml7755/project4-custom:latest',
+                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
+                arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
+                is_delete_operator_pod=True,
+                get_logs=True,
+            )
+            
+            sexual_task >> ageband_task
