@@ -29,7 +29,17 @@ sexual_dynamic_params = [{
 age_band_dynamic_params = [{
     "AGE_BAND" : "AGE_BAND_ALL"
 }, {
-    "AGE_BAND" : "AGE_BAND_ALL"
+    "AGE_BAND" : "AGE_BAND_MINOR"
+}, {
+    "AGE_BAND" : "AGE_BAND_20"
+}, {
+    "AGE_BAND" : "AGE_BAND_25"
+}, {
+    "AGE_BAND" : "AGE_BAND_30"
+}, {
+    "AGE_BAND" : "AGE_BAND_35"
+}, {
+    "AGE_BAND" : "AGE_BAND_40"
 }
 ]
 
@@ -38,7 +48,7 @@ with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
     default_args=default_args,
     description='musinsa ranking raw data extraction and loading to s3',
-    schedule_interval=None,  # 수동 실행
+    schedule_interval=None,
     start_date=days_ago(1),
     catchup=False,
     tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
@@ -46,24 +56,26 @@ with DAG(
 
     # Start task
     start = DummyOperator(
-        task_id="start")
+                task_id="start"
+    )
     
     for i, sexual_dct in enumerate(sexual_dynamic_params):
         sexual_task = DummyOperator(
-            task_id=f'{sexual_dct["SEXUAL"]}_task')
+                        task_id=f'{sexual_dct["SEXUAL"]}_task'
+        )
         
         start >> sexual_task
         
         for j, age_band_dct in enumerate(age_band_dynamic_params):
             ageband_task = KubernetesPodOperator(
-                task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
-                name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
-                namespace='airflow',
-                image='ehdgml7755/project4-custom:latest',
-                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
-                arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
-                is_delete_operator_pod=True,
-                get_logs=True,
+                                task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
+                                name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
+                                namespace='airflow',
+                                image='ehdgml7755/project4-custom:latest',
+                                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
+                                arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
+                                is_delete_operator_pod=True,
+                                get_logs=True,
             )
             
             sexual_task >> ageband_task
