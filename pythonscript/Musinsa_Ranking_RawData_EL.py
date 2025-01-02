@@ -35,6 +35,7 @@ headers = {
 params = {
     "storeCode" : "musinsa",
     "period" : "DAILY"
+    "AGE_BAND" : "AGE_BAND_ALL"
 }
 
 # categoryCode
@@ -43,19 +44,17 @@ today_date = datetime.now().strftime("%Y-%m-%d")
 
 if __name__ == "__main__":
     arguments1 = sys.argv[1]
-    arguments2 = sys.argv[2]
     
     params['gf'] =  arguments1
-    params['ageBand'] = arguments2
+    
     for code in categoryCode:
         response = requests.get(url, headers=headers, params=params)
-        
         if response.status_code == 200:
             response_json = response.json()
             print("response 200")
         
         bucket_name = 'project4-raw-data'
-        file_name = f"{today_date}/{code}/musinsa_{params['gf']}_{params['ageBand']}_{code}.json"
+        file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{code}.json"
         
         validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
         print(file_name)

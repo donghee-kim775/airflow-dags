@@ -59,20 +59,14 @@ with DAG(
         task_id="start")
 
     for i, sexual_dct in enumerate(Sexual_Dynamic_Params):
-        # Sexual Dummy Task
-        sexual_task = DummyOperator(
-            task_id=f"sexual_task_{sexual_dct['SEXUAL']}"
+        sexual_task = KubernetesPodOperator(
+            task_id=f'{sexual_dct["SEXUAL"]}_task',
+            name=f'{sexual_dct["SEXUAL"]}_task',
+            namespace='airflow',
+            image='ehdgml7755/project4-custom:latest',
+            cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
+            arguments=[sexual_dct["SEXUAL"]],  # Pass task_number as an argument to the script
+            is_delete_operator_pod=True,  # Do not delete pod after completion
+            get_logs=True,
         )
         start >> sexual_task
-        for j, age_dct in enumerate(AGE_BAND_Dynamic_Params):
-            age_task = KubernetesPodOperator(
-                task_id=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
-                name=f'fetch_data_task_{sexual_dct["SEXUAL"]}_{age_dct["AGE_BAND"]}',
-                namespace='airflow',
-                image='ehdgml7755/project4-custom:latest',
-                cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
-                arguments=[sexual_dct["SEXUAL"], age_dct["AGE_BAND"]],  # Pass task_number as an argument to the script
-                is_delete_operator_pod=True,  # Do not delete pod after completion
-                get_logs=True,
-            )
-            sexual_task >> age_task
