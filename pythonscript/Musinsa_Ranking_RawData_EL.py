@@ -34,7 +34,7 @@ headers = {
 
 params = {
     "storeCode" : "musinsa",
-    "period" : "DAILY"
+    "period" : "DAILY",
     "AGE_BAND" : "AGE_BAND_ALL"
 }
 
