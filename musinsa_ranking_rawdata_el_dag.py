@@ -17,7 +17,7 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
-sexual_dynamic_params = [{
+SEXUAL_DYNAMIC_PARAMS = [{
     "SEXUAL" : "F"
 }, {
     "SEXUAL" : "M"
@@ -26,7 +26,7 @@ sexual_dynamic_params = [{
 }
 ]
 
-age_band_dynamic_params = [{
+AGE_BAND_DYNAMIC_PARAMS = [{
     "AGE_BAND" : "AGE_BAND_ALL"
 }, {
     "AGE_BAND" : "AGE_BAND_MINOR"
@@ -59,14 +59,14 @@ with DAG(
                 task_id="start"
     )
     
-    for i, sexual_dct in enumerate(sexual_dynamic_params):
+    for i, sexual_dct in enumerate(SEXUAL_DYNAMIC_PARAMS):
         sexual_task = DummyOperator(
                         task_id=f'{sexual_dct["SEXUAL"]}_task'
         )
         
         start >> sexual_task
         
-        for j, age_band_dct in enumerate(age_band_dynamic_params):
+        for j, age_band_dct in enumerate(AGE_BAND_DYNAMIC_PARAMS):
             ageband_task = KubernetesPodOperator(
                                 task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
                                 name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
