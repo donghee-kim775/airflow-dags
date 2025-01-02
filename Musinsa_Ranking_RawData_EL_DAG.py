@@ -47,7 +47,7 @@ with DAG(
             name=f'{sexual_dct["SEXUAL"]}_task',
             namespace='airflow',
             image='ehdgml7755/project4-custom:latest',
-            cmds=['python', './pythonscripts/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
+            cmds=['python', './pythonscript/Musinsa_Ranking_RawData_EL.py'],  # Execute the script from /scripts
             arguments=[sexual_dct["SEXUAL"]],  # Pass task_number as an argument to the script
             is_delete_operator_pod=False,  # Do not delete pod after completion
             get_logs=True,
