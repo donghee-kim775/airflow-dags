@@ -35,7 +35,7 @@ with DAG(
         task_id='s3_to_redshift',
         schema='SilverLayer',  # Redshift 스키마
         table='Musinsa_Ranking_silver',    # Redshift 테이블
-        s3_bucket='project4-silver-bucket',
+        s3_bucket='project4-silver-data',
         s3_key=s3path,  # S3 경로
         copy_options=['FORMAT AS PARQUET'],  # Parquet 파일 지정
         aws_conn_id='aws_conn',  # Airflow의 AWS 연결 ID
