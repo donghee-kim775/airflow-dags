@@ -38,6 +38,7 @@ headers = {
 params = {
     "storeCode" : "musinsa",
     "period" : "DAILY",
+    "ageBand" : "AGE_BAND_ALL"
 }
 
 # categoryCode
@@ -47,15 +48,13 @@ categoryCode = ["103000", "002000", "001000"] # 카테고리가 늘어남에 따
 today_date = datetime.now().strftime("%Y-%m-%d")
 
 def main():
-    parser = argparse.ArgumentParser(description="SEXUAL / AGEBAND")
+    parser = argparse.ArgumentParser(description="SEXUAL")
     
     parser.add_argument('gf', type=str, help='parameter : SEXUAL')
-    parser.add_argument('ageBand', type=str, help='parameter : age_band')
     
     args = parser.parse_args()
     
     params['gf'] =  args.gf
-    params['ageBand'] = args.ageBand
     
     for code in categoryCode:
         params['categoryCode']=code
@@ -65,7 +64,7 @@ def main():
             logging.info("response 200")
         
         bucket_name = 'project4-raw-data'
-        file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{params['ageBand']}_{code}.json"
+        file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{code}.json"
 
         validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
     

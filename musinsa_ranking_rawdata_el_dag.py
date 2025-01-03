@@ -24,23 +24,6 @@ SEXUAL_DYNAMIC_PARAMS = [{
 }
 ]
 
-AGE_BAND_DYNAMIC_PARAMS = [{
-    "AGE_BAND" : "AGE_BAND_ALL"
-}, {
-    "AGE_BAND" : "AGE_BAND_MINOR"
-}, {
-    "AGE_BAND" : "AGE_BAND_20"
-}, {
-    "AGE_BAND" : "AGE_BAND_25"
-}, {
-    "AGE_BAND" : "AGE_BAND_30"
-}, {
-    "AGE_BAND" : "AGE_BAND_35"
-}, {
-    "AGE_BAND" : "AGE_BAND_40"
-}
-]
-
 # DAG 정의
 with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
@@ -58,22 +41,16 @@ with DAG(
             )
     
     for i, sexual_dct in enumerate(SEXUAL_DYNAMIC_PARAMS):
-        sexual_task = DummyOperator(
-                        task_id=f'{sexual_dct["SEXUAL"]}_task'
+        
+        sexual_task = KubernetesPodOperator(
+                            task_id=f'{sexual_dct["SEXUAL"]}_task',
+                            name=f'{sexual_dct["SEXUAL"]}_task',
+                            namespace='airflow',
+                            image='coffeeisnan/project4-custom:latest',
+                            cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
+                            arguments=[sexual_dct["SEXUAL"]],
+                            is_delete_operator_pod=False,
+                            get_logs=True,
         )
         
         start >> sexual_task
-        
-        for j, age_band_dct in enumerate(AGE_BAND_DYNAMIC_PARAMS):
-            ageband_task = KubernetesPodOperator(
-                                task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
-                                name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
-                                namespace='airflow',
-                                image='coffeeisnan/project4-custom:latest',
-                                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
-                                arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
-                                is_delete_operator_pod=False,
-                                get_logs=True,
-            )
-            
-            sexual_task >> ageband_task
