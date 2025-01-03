@@ -48,7 +48,7 @@ with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
     default_args=default_args,
     description='musinsa ranking raw data extraction and loading to s3',
-    schedule_interval=None,
+    schedule_interval='0 0 * * *',
     start_date=days_ago(1),
     catchup=False,
     tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
@@ -71,10 +71,10 @@ with DAG(
                                 task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
                                 name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
                                 namespace='airflow',
-                                image='ehdgml7755/project4-custom:latest',
+                                image='coffeeisnan/project4-custom:latest',
                                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
                                 arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
-                                is_delete_operator_pod=False,
+                                # is_delete_operator_pod=True,
                                 get_logs=True,
             )
             
