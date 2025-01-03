@@ -46,7 +46,7 @@ with DAG(
     schedule_interval='0 0 * * *',
     start_date=days_ago(1),
     catchup=False,
-    tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
+    tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
 ) as dag:
 
     # Start task
