@@ -20,7 +20,7 @@ default_args = {
 SEXUAL_CATEGORY_DYNAMIC_PARAMS = [
     {"SEXUAL": "M", "CATEGORIES": {
         "Shoes": ["103004", "103005", "103001", "103003", "103002", "103007"],
-        "Bottoms": ["003000", "003002", "003004", "003005", "003006", "003008", "003009"],
+        "Pants": ["003000", "003002", "003004", "003005", "003006", "003008", "003009"],
         "Knitwear": ["001006", "002020"],
         "Shirts": ["001002"],
         "TShirts": ["001001", "001010", "001011", "001005", "001004", "001003"],
@@ -78,7 +78,7 @@ with DAG(
                                 image='ehdgml7755/project4-custom:latest',
                                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
                                 arguments=[sexual_dct["SEXUAL"], category] + items,
-                                is_delete_operator_pod=False,
+                                is_delete_operator_pod=True,
                                 get_logs=True,
             )
             sexual_task >> category_task >> wait
