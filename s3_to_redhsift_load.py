@@ -17,7 +17,7 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
-categoryCode = "001000"
+categoryCode = "002000"
 
 s3path = f"s3a://project4-silver-data/2025-01-02/Musinsa/RankingData_transformed/{categoryCode}.parquet"
 
