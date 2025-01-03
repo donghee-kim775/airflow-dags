@@ -49,21 +49,30 @@ with DAG(
 ) as dag:
 
     start = DummyOperator(
-                task_id="start"
-            )
+        task_id="start"
+    )
 
     for categorydepth in CATEGORY_PARAMS.keys():
         categorydepth_task = DummyOperator(
             task_id=f"{categorydepth}_task"
         )
         start >> categorydepth_task
+
         for category, categorycodes in CATEGORY_PARAMS[categorydepth].items():
             category_task = DummyOperator(
                 task_id=f"{category}_task"
             )
             categorydepth_task >> category_task
+
+            # 순차 연결을 위한 초기값 설정
+            previous_task = category_task
+
             for categorycode in categorycodes:
                 categorycode_task = DummyOperator(
                     task_id=f"{categorycode}_task"
                 )
-                category_task >> categorycode_task
+                # 이전 태스크 뒤에 현재 태스크 연결
+                previous_task >> categorycode_task
+
+                # 현재 태스크를 다음 태스크와 연결하기 위해 기록
+                previous_task = categorycode_task
