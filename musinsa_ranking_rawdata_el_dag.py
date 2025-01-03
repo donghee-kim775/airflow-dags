@@ -46,7 +46,7 @@ with DAG(
                             task_id=f'{sexual_dct["SEXUAL"]}_task',
                             name=f'{sexual_dct["SEXUAL"]}_task',
                             namespace='airflow',
-                            image='coffeeisnan/project4-custom:latest',
+                            image='ehdgml7755/project4-custom:latest',
                             cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
                             arguments=[sexual_dct["SEXUAL"]],
                             is_delete_operator_pod=False,
