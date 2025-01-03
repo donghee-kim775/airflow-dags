@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - pythonscript/**
-      - .github/workflows/docker-image.yaml
+      - .github/workflows/Python-Image.yaml
     
 jobs:
   build-and-push:
