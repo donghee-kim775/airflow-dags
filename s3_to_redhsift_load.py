@@ -71,6 +71,10 @@ with DAG(
             # 순차 연결을 위한 초기값 설정
             previous_task = category_task
 
+            wait = DummyOperator(
+                task_id=f"{categorydepth}_wait_task"
+            )
+            
             for categorycode in categorycodes:
                 categorycode_task = DummyOperator(
                     task_id=f"{categorycode}_task"
@@ -79,12 +83,8 @@ with DAG(
                 previous_task >> categorycode_task
 
                 previous_task = categorycode_task
-        
-            wait = DummyOperator(
-                task_id=f"{categorydepth}_wait_task"
-            )
 
-            categorycode_task >> wait
+            previous_task >> wait
         
         wait >> end
             
