@@ -19,7 +19,7 @@ default_args = {
 
 categoryCode = "002000"
 
-s3path = f"s3a://project4-silver-data/2025-01-02/Musinsa/RankingData_transformed/{categoryCode}.parquet"
+s3path = f"2025-01-02/Musinsa/RankingData_transformed/{categoryCode}.parquet"
 
 with DAG(
     dag_id='Musinsa_Ranking_Table_S3_Load_Redshift',
