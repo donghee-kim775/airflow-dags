@@ -70,7 +70,7 @@ with DAG(
                 task_id=f'{sexual_dct["SEXUAL"]}_wait_task'
         )
         
-        for category, items in sexual_dct["CATEGORY"].items():
+        for category, items in sexual_dct["CATEGORIES"].items():
             category_task = KubernetesPodOperator(
                                 task_id=f'{sexual_dct["SEXUAL"]}_{category}_task',
                                 name=f'{sexual_dct["SEXUAL"]}_{category}_task',
