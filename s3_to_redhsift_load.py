@@ -62,6 +62,10 @@ with DAG(
         )
         start >> categorydepth_task
 
+        wait = DummyOperator(
+            task_id=f"{categorydepth}_wait_task"
+        )
+        
         for category, categorycodes in CATEGORY_PARAMS[categorydepth].items():
             category_task = DummyOperator(
                 task_id=f"{category}_task"
@@ -70,11 +74,7 @@ with DAG(
 
             # 순차 연결을 위한 초기값 설정
             previous_task = category_task
-
-            wait = DummyOperator(
-                task_id=f"{categorydepth}_wait_task"
-            )
-            
+    
             for categorycode in categorycodes:
                 categorycode_task = DummyOperator(
                     task_id=f"{categorycode}_task"
