@@ -61,7 +61,7 @@ def main():
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
             response_json = response.json()
-            logging.info("[response 200]")
+            logging.info("response 200")
         
         bucket_name = 'project4-raw-data'
         file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{code}.json"
