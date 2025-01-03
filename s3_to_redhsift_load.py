@@ -52,6 +52,10 @@ with DAG(
         task_id="start"
     )
 
+    end = DummyOperator(
+        task_id="end"
+    )
+    
     for categorydepth in CATEGORY_PARAMS.keys():
         categorydepth_task = DummyOperator(
             task_id=f"{categorydepth}_task"
@@ -71,8 +75,14 @@ with DAG(
                 categorycode_task = DummyOperator(
                     task_id=f"{categorycode}_task"
                 )
-                # 이전 태스크 뒤에 현재 태스크 연결
+                
                 previous_task >> categorycode_task
 
-                # 현재 태스크를 다음 태스크와 연결하기 위해 기록
                 previous_task = categorycode_task
+        
+        wait = DummyOperator(
+            task_id=f"{categorydepth}_wait_task"
+        )
+        
+        categorycode_task >> wait >> end
+            
