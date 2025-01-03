@@ -80,9 +80,11 @@ with DAG(
 
                 previous_task = categorycode_task
         
-        wait = DummyOperator(
-            task_id=f"{categorydepth}_wait_task"
-        )
+            wait = DummyOperator(
+                task_id=f"{categorydepth}_wait_task"
+            )
+
+            categorycode_task >> wait
         
-        categorycode_task >> wait >> end
+        wait >> end
             
