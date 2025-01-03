@@ -41,22 +41,22 @@ params = {
     "ageBand" : "AGE_BAND_ALL"
 }
 
-# categoryCode
-categoryCode = ["103000", "002000", "001000"] # 카테고리가 늘어남에 따라 수정 필요
-
 # today_date
 today_date = datetime.now().strftime("%Y-%m-%d")
 
 def main():
-    parser = argparse.ArgumentParser(description="SEXUAL")
-    
+    parser = argparse.ArgumentParser(description="SEXUAL / CATEGORIES")
     parser.add_argument('gf', type=str, help='parameter : SEXUAL')
-    
+    parser.add_argument('category', type=str, help='parameter : CATEGORY')
+    parser.add_argument('codes', nargs='+', help='parameter : CATEGORY_CODE')
     args = parser.parse_args()
     
     params['gf'] =  args.gf
+    category = args.category
+    category_codes = args.codes
     
-    for code in categoryCode:
+    logging.info(f"Category : {category} Crawler Start")
+    for code in category_codes:
         params['categoryCode']=code
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
