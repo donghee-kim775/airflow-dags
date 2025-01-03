@@ -4,7 +4,7 @@ from airflow.providers.amazon.aws.transfers.s3_to_redshift import S3ToRedshiftOp
 from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
-from datetime import timedelta
+from datetime import timedelta, datetime
 from kubernetes.client import models as k8s
 
 # DAG 기본 설정
@@ -17,9 +17,13 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
-categoryCode = "002000"
+# today_date
+today_date = datetime.now().strftime("%Y-%m-%d")
 
-s3path = f"2025-01-02/Musinsa/RankingData_transformed/{categoryCode}.parquet"
+# categoryCode
+categoryCode = ["001000", "002000", "103000"]
+
+s3path = f"{today_date}/Musinsa/RankingData/{categoryCode}.parquet"
 
 with DAG(
     dag_id='Musinsa_Ranking_Table_S3_Load_Redshift',
@@ -30,6 +34,10 @@ with DAG(
     catchup=False,
     tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
 ) as dag:
+
+    start = DummyOperator(
+                task_id="start"
+            )
 
     s3_to_redshift = S3ToRedshiftOperator(
         task_id='s3_to_redshift',
