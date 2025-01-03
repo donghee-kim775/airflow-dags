@@ -17,13 +17,26 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
+CATEGORY_PARAMS = {
+    "Top" : {
+        "Shirts": ["001002"],
+        "Knitwear": ["001006", "001008", "002016", "002020"],
+        "TShirts": ["001001", "001003", "001004", "001005", "001010", "001011"],
+        "Dresses": ["100001", "100002", "100003"]
+    },
+    "Outer" : {
+        "Jackets": ["002001", "002002", "002004", "002006", "002017", "002018", "002019", "002022"],
+        "Coats": ["002008"],
+    },
+    "Bottom" : {
+        "Pants": ["003000", "003002", "003004", "003005", "003006", "003007", "003008", "003009"],
+        "Skirts": ["100004", "100005", "100006"],
+        "Shoes": ["103001", "103002", "103003", "103004", "103005", "103007"]
+    }
+}
+
 # today_date
 today_date = datetime.now().strftime("%Y-%m-%d")
-
-# categoryCode
-categoryCode = ["001000", "002000", "103000"]
-
-s3path = f"{today_date}/Musinsa/RankingData/{categoryCode}.parquet"
 
 with DAG(
     dag_id='Musinsa_Ranking_Table_S3_Load_Redshift',
@@ -39,17 +52,18 @@ with DAG(
                 task_id="start"
             )
 
-    s3_to_redshift = S3ToRedshiftOperator(
-        task_id='s3_to_redshift',
-        schema='SilverLayer',  # Redshift 스키마
-        table='Musinsa_Ranking_silver',    # Redshift 테이블
-        s3_bucket='project4-silver-data',
-        s3_key=s3path,  # S3 경로
-        copy_options=['FORMAT AS PARQUET'],  # Parquet 파일 지정
-        aws_conn_id='aws_conn',  # Airflow의 AWS 연결 ID
-        redshift_conn_id='redshift_default',  # Airflow의 Redshift 연결 ID
-        task_concurrency=1,
-        dag=dag,
-    )
-
-    s3_to_redshift
+    for categorydepth in CATEGORY_PARAMS.keys():
+        categorydepth_task = DummyOperator(
+            task_id=f"{categorydepth}_task"
+        )
+        start >> categorydepth_task
+        for category, categorycodes in CATEGORY_PARAMS[categorydepth].items():
+            category_task = DummyOperator(
+                task_id=f"{category}_task"
+            )
+            categorydepth_task >> category_task
+            for categorycode in categorycodes:
+                categorycode_task = DummyOperator(
+                    task_id=f"{categorycode}_task"
+                )
+                category_task >> categorycode_task

@@ -49,7 +49,7 @@ with DAG(
     tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
 ) as dag:
 
-    # Start task
+    # start task
     start = DummyOperator(
                 task_id="start"
     )
@@ -60,15 +60,16 @@ with DAG(
     )
     
     for sexual_dct in SEXUAL_CATEGORY_DYNAMIC_PARAMS:
+        # sexual task
         sexual_task = DummyOperator(
                             task_id = f'{sexual_dct["SEXUAL"]}_task'
         )
-        start >> sexual_task
         
         # await task
         wait = DummyOperator(
                 task_id=f'{sexual_dct["SEXUAL"]}_wait_task'
         )
+        start >> sexual_task
         
         for category, items in sexual_dct["CATEGORIES"].items():
             category_task = KubernetesPodOperator(
