@@ -46,15 +46,16 @@ today_date = datetime.now().strftime("%Y-%m-%d")
 
 def main():
     parser = argparse.ArgumentParser(description="SEXUAL / CATEGORIES")
-    parser.add_argument('gf', type=str, help='parameter : SEXUAL')
-    parser.add_argument('category', type=str, help='parameter : CATEGORY')
+    parser.add_argument('gf', nargs='+', help='parameter : SEXUAL')
     parser.add_argument('codes', nargs='+', help='parameter : CATEGORY_CODE')
     args = parser.parse_args()
     
-    params['gf'] =  args.gf
-    category = args.category
-    category_codes = args.codes
+    gf = args.gf
+    codes = args.codes
     
+    print(gf)
+    print(codes)
+    """
     logging.info(f"Category : {category} Crawler Start")
     for code in category_codes:
         params['categoryCode']=code
@@ -67,7 +68,7 @@ def main():
         file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{code}.json"
 
         validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
-        
+     """   
 if __name__ == "__main__":
     main()
     
