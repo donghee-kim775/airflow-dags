@@ -18,21 +18,9 @@ default_args = {
 }
 
 CATEGORY_PARAMS = {
-    "Top" : {
-        "Shirts": ["001002"],
-        "Knitwear": ["001006", "001008", "002016", "002020"],
-        "TShirts": ["001001", "001003", "001004", "001005", "001010", "001011"],
-        "Dresses": ["100001", "100002", "100003"]
-    },
-    "Outer" : {
-        "Jackets": ["002001", "002002", "002004", "002006", "002017", "002018", "002019", "002022"],
-        "Coats": ["002008"],
-    },
-    "Bottom" : {
-        "Pants": ["003000", "003002", "003004", "003005", "003006", "003007", "003008", "003009"],
-        "Skirts": ["100004", "100005", "100006"],
-        "Shoes": ["103001", "103002", "103003", "103004", "103005", "103007"]
-    }
+    "Top" : ["Shirts", "Knitwear", "Tshirts", "Dresses"],
+    "Outer" : ["Jackets", "Coats"],
+    "Bottom" : ["Pants", "Skirts", "Shoes"]
 }
 
 # today_date
@@ -56,35 +44,32 @@ with DAG(
         task_id="end"
     )
     
+
     for categorydepth in CATEGORY_PARAMS.keys():
         categorydepth_task = DummyOperator(
-            task_id=f"{categorydepth}_task"
-        )
-        start >> categorydepth_task
-
-        wait = DummyOperator(
-            task_id=f"{categorydepth}_wait_task"
+            task_id=f'{categorydepth}_task'
         )
         
-        for category, categorycodes in CATEGORY_PARAMS[categorydepth].items():
-            category_task = DummyOperator(
-                task_id=f"{category}_task"
+        wait = DummyOperator(
+            task_id=f"{categorydepth}_wait"
+        )
+        
+        start >> categorydepth_task
+        for category in CATEGORY_PARAMS[categorydepth]:
+            s3_copy_redshift_task = S3ToRedshiftOperator(
+                task_id=f"load_{category}_data",
+                schema="silverlayer",
+                table="musinsar_ranking_silver",
+                s3_bucket="project4-silver-data",
+                s3_key=f"{today_date}/Musinsa/{category}/*",  # 와일드카드 활용
+                copy_options=['FORMAT AS PARQUET'],
+                aws_conn_id="aws_default",
+                redshift_conn_id="redshift_default",
+                task_concurrency=1
             )
-            categorydepth_task >> category_task
-
-            # 순차 연결을 위한 초기값 설정
-            previous_task = category_task
-    
-            for categorycode in categorycodes:
-                categorycode_task = DummyOperator(
-                    task_id=f"{categorycode}_task"
-                )
-                
-                previous_task >> categorycode_task
-
-                previous_task = categorycode_task
-
-            previous_task >> wait
+            
+            categorydepth_task >> s3_copy_redshift_task >> wait
         
         wait >> end
+        
             
