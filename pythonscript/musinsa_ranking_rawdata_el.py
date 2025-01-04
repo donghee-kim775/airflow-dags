@@ -83,7 +83,7 @@ def main():
                 logging.info("response 200")
             
             bucket_name = 'project4-raw-data'
-            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{sexual_data[1]}_{category3depth[0]}_{category4name}.json"
+            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category_data[0]}_{category3depth[0]}_{category4name}.json"
     
             validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
   
