@@ -17,12 +17,6 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
-CATEGORY_PARAMS = {
-    "Top" : ["Shirts", "Knitwear", "Tshirts", "Dresses"],
-    "Outer" : ["Jackets", "Coats"],
-    "Bottom" : ["Pants", "Skirts", "Shoes"]
-}
-
 # today_date
 today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 

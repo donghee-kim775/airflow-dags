@@ -7,6 +7,8 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 from kubernetes.client import models as k8s
 
+from musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+
 # DAG 기본 설정
 default_args = {
     'owner': 'ehdgml7755@cu.ac.kr',
@@ -16,27 +18,6 @@ default_args = {
     'retries': 24,
     'retry_delay': timedelta(minutes=30),
 }
-
-SEXUAL_CATEGORY_DYNAMIC_PARAMS = [
-    {"SEXUAL": "M", "CATEGORIES": {
-        "Shoes": ["103004", "103005", "103001", "103003", "103002", "103007"],
-        "Pants": ["003000", "003002", "003004", "003005", "003006", "003008", "003009"],
-        "Knitwear": ["001006", "002020"],
-        "Shirts": ["001002"],
-        "TShirts": ["001001", "001010", "001011", "001005", "001004", "001003"],
-        "Jackets": ["002001", "002004", "002002", "002017", "002006", "002022", "002019", "002018"],
-        "Coats": ["002008"],
-    }},
-    {"SEXUAL": "F", "CATEGORIES": {
-        "Shoes": ["103001", "103002", "103003", "103004", "103005", "103007"],
-        "Skirts": ["100004", "100005", "100006"],
-        "Dresses": ["100001", "100002", "100003"],
-        "Pants": ["003002", "003004", "003005", "003006", "003007", "003008", "003009"],
-        "Knitwear": ["001006", "001008", "002020", "002016"],
-        "Shirts": ["001002"],
-        "TShirts": ["001001", "001003", "001004", "001005", "001010", "001011"],
-    }}
-]
 
 # DAG 정의
 with DAG(
@@ -59,30 +40,34 @@ with DAG(
                 task_id="end"
     )
     
-    for sexual_dct in SEXUAL_CATEGORY_DYNAMIC_PARAMS:
-        # sexual task
+    # SEXUAL_CATEGORY_DYNAMIC_PARAMS
+    # dct_1 => 여성 dct / dct_2 => 남성 dct
+    for dct in SEXUAL_CATEGORY_DYNAMIC_PARAMS:
+        sexual = list(dct['SEXUAL'].items())[0]
+        
         sexual_task = DummyOperator(
-                            task_id = f'{sexual_dct["SEXUAL"]}_task'
+            task_id=f"{sexual[0]}_task"
         )
         
-        # await task
-        wait = DummyOperator(
-                task_id=f'{sexual_dct["SEXUAL"]}_wait_task'
+        wait_task = DummyOperator(
+            task_id=f"{sexual[0]}_wait"
         )
+        
         start >> sexual_task
-        
-        for category, items in sexual_dct["CATEGORIES"].items():
+        for categories in dct['CATEGORIES']:
+            category2depth = list(categories.items())[0]
+            
             category_task = KubernetesPodOperator(
-                                task_id=f'{sexual_dct["SEXUAL"]}_{category}_task',
-                                name=f'{sexual_dct["SEXUAL"]}_{category}_task',
-                                namespace='airflow',
-                                image='ehdgml7755/project4-custom:latest',
-                                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
-                                arguments=[sexual_dct["SEXUAL"], category] + items,
-                                is_delete_operator_pod=True,
-                                get_logs=True,
+                task_id=f"{category2depth[0]}_task",
+                name=f'{sexual[0]}_{category2depth}_task',
+                namespace='airflow',
+                image='ehdgml7755/project4-custom:latest',
+                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
+                arguments=[sexual, category2depth],
+                is_delete_operator_pod=True,
+                get_logs=True,
             )
-            sexual_task >> category_task >> wait
+            
+            sexual_task >> category_task >> wait_task
         
-        wait >> end
-        
+        wait_task >> end
