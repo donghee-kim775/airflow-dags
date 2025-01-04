@@ -69,6 +69,8 @@ def main():
 
     params['gf'] = sexual_data[0]
 
+    category2depth = mapping_2depth_kor(category_data[0])
+    
     logging.info(f"Category : {sexual_data[0]}_{category_data[0]} Crawler Start")
    
     for category_info in category_data[1]:
@@ -83,7 +85,7 @@ def main():
                 logging.info("response 200")
             
             bucket_name = 'project4-raw-data'
-            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category_data[0]}_{category3depth[0]}_{category4name}.json"
+            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
     
             validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
   
