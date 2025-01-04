@@ -45,16 +45,20 @@ params = {
 today_date = datetime.now().strftime("%Y-%m-%d")
 
 def main():
-    parser = argparse.ArgumentParser(description="SEXUAL / CATEGORIES")
-    parser.add_argument('gf', nargs='+', help='parameter : SEXUAL')
-    parser.add_argument('codes', nargs='+', help='parameter : CATEGORY_CODE')
+    parser = argparse.ArgumentParser(description="sexual/category param")
+    parser.add_argument('sexual', type=str, help='sexual')
+    parser.add_argument('category_data', type=str, help='category')
+
+    # 인자 파싱
     args = parser.parse_args()
-    
-    gf = args.gf
-    codes = args.codes
-    
-    print(gf)
-    print(codes)
+
+    # 전달된 JSON 데이터를 파싱
+    sexual_data = json.loads(args.sexual) 
+    category_data = json.loads(args.category_data)
+
+    # 파싱된 데이터 사용
+    print(f"Sexual data: {sexual_data}")
+    print(f"Category data: {category_data}")
     """
     logging.info(f"Category : {category} Crawler Start")
     for code in category_codes:

@@ -9,6 +9,8 @@ from kubernetes.client import models as k8s
 
 from musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 
+import json
+
 # DAG 기본 설정
 default_args = {
     'owner': 'ehdgml7755@cu.ac.kr',
@@ -63,7 +65,7 @@ with DAG(
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
-                arguments=[sexual, category2depth],
+                arguments=[json.dumps(sexual), json.dumps(category2depth)],
                 is_delete_operator_pod=True,
                 get_logs=True,
             )
