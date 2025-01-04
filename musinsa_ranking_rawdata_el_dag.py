@@ -58,7 +58,7 @@ with DAG(
             category2depth = list(categories.items())[0]
             
             category_task = KubernetesPodOperator(
-                task_id=f"{category2depth[0]}_task",
+                task_id=f"{sexual[0]}_{category2depth[0]}_task",
                 name=f'{sexual[0]}_{category2depth[0]}_task',
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
