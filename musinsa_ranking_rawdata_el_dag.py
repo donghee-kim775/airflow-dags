@@ -59,7 +59,7 @@ with DAG(
             
             category_task = KubernetesPodOperator(
                 task_id=f"{category2depth[0]}_task",
-                name=f'{sexual[0]}_{category2depth}_task',
+                name=f'{sexual[0]}_{category2depth[0]}_task',
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
