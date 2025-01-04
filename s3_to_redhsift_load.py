@@ -61,7 +61,7 @@ with DAG(
                 schema="silverlayer",
                 table="musinsa_ranking_silver",
                 s3_bucket="project4-silver-data",
-                s3_key=f"{today_date}/Musinsa/RankingData/{category}/*",
+                s3_key=f"{today_date}/Musinsa/RankingData/{category}/",
                 copy_options=['FORMAT AS PARQUET'],
                 aws_conn_id="aws_default",
                 redshift_conn_id="redshift_default",
