@@ -24,7 +24,7 @@ CATEGORY_PARAMS = {
 }
 
 # today_date
-today_date = datetime.now().strftime("%Y-%m-%d")
+today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
 with DAG(
     dag_id='Musinsa_Ranking_Table_S3_Load_Redshift',
@@ -59,9 +59,9 @@ with DAG(
             s3_copy_redshift_task = S3ToRedshiftOperator(
                 task_id=f"load_{category}_data",
                 schema="silverlayer",
-                table="musinsar_ranking_silver",
+                table="musinsa_ranking_silver",
                 s3_bucket="project4-silver-data",
-                s3_key=f"{today_date}/Musinsa/{category}/*",  # 와일드카드 활용
+                s3_key=f"{today_date}/Musinsa/{category}/*",
                 copy_options=['FORMAT AS PARQUET'],
                 aws_conn_id="aws_default",
                 redshift_conn_id="redshift_default",
