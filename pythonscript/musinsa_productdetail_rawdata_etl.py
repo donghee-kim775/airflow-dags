@@ -44,6 +44,7 @@ def get_product_ids(bucket_path, file_key, aws_storage_options):
 
 # product detail parsing => DataFrame Record
 def et_product_detail(driver, master_category, depth4category, product_id):
+    print(product_id)
     url = f"https://www.musinsa.com/products/{product_id}"
     driver.get(url)
 
@@ -51,7 +52,7 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     
     soup = BeautifulSoup(html, features="html.parser")
 
-    time.sleep(2)
+    time.sleep(2.5)
 
     title_text = soup.find('title').text
     product_name = re.sub(r' - 사이즈 & 후기.*', '', title_text)
