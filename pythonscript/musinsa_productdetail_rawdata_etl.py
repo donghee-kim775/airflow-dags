@@ -8,6 +8,7 @@ from selenium.webdriver import FirefoxOptions
 
 from bs4 import BeautifulSoup
 
+import time
 import re
 import os
 from datetime import datetime, timedelta
@@ -49,6 +50,8 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     html = driver.page_source
     
     soup = BeautifulSoup(html, features="html.parser")
+
+    time.sleep(1.5)
 
     title_text = soup.find('title').text
     product_name = re.sub(r' - 사이즈 & 후기.*', '', title_text)
