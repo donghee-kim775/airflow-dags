@@ -11,7 +11,7 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 WORKDIR /app
 
 # boto3 설치
-RUN pip install boto3 requests pandas selenium beautifulsoup4 webdriver-manager pyarrow
+RUN pip install boto3 requests pandas selenium beautifulsoup4 webdriver-manager pyarrow fsspec
 
 # Firefox 관련 설치
 RUN apt-get update && apt-get install -y firefox-esr

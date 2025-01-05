@@ -125,7 +125,6 @@ def main():
             product_list = get_product_ids(bucket_path, file_name, aws_storage_options)
             print(f"{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}")
             print(product_list)
-            
 
 if __name__ == "__main__":
     main()
