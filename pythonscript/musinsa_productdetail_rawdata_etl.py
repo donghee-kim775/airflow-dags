@@ -61,10 +61,11 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     final_price = get_content_or_none(soup.find('meta', {'property': 'product:price:amount'}))
     discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:discount_rate'}))
 
-    review_count = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[1]/div[14]/div[2]/div[1]/div/div[4]/div[7]/span/text()[1]').text
-    review_avg_rating = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[1]/div[2]/div[7]/div/span[1]').text
-    
-    like_counting = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[19]/div/div/span').text
+    review_count = soup.find('span', class_='text-xs font-medium pl-0.5 pr-1 cursor-default text-black font-pretendard').text
+    review_avg_rating = soup.find('span', class_='text-xs font-normal cursor-pointer text-gray-600 font-pretendard').text
+    review_avg_rating = re.search(r'\d{1,3}(?:,\d{3})*', review_avg_rating).group().replace(',', '')
+
+    like_counting = soup.select_one('#root > div:nth-child(1) > div:nth-child(19) > div > div > span').text
     
     created_at = datetime.now().strftime('%Y-%m-%d')
     
