@@ -11,7 +11,7 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 WORKDIR /app
 
 # boto3 설치
-RUN pip install boto3 requests
+RUN pip install boto3 requests pandas selenium beautifulsoup4
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
 COPY pythonscript ./pythonscript
