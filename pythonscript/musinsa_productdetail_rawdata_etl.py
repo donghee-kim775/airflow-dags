@@ -121,7 +121,7 @@ def main():
         category3depth = list(category_info.items())[0]
         
         for category4depth in category3depth[1].values():
-            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.json"
+            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             product_list = get_product_ids(bucket_path, file_name, aws_storage_options)
             print(f"{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}")
             print(product_list)

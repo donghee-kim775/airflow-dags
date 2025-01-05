@@ -10,9 +10,10 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 # 작업 디렉토리를 설정
 WORKDIR /app
 
-# boto3 설치
+# 관련 pip 설치
 RUN pip install boto3 pandas pyarrow fsspec s3fs
 RUN pip install requests selenium beautifulsoup4 webdriver-manager
+
 # Firefox 관련 설치
 RUN apt-get update && apt-get install -y firefox-esr
 
