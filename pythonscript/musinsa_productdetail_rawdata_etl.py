@@ -5,6 +5,7 @@ import argparse
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver import FirefoxOptions
 
 from bs4 import BeautifulSoup
 
@@ -106,13 +107,9 @@ def main():
     print(category_data)
     
     # Firefox driver Setting
-    options = Options()
-    options.headless = True
-    options.set_preference('marionette', True)
-
-    service = Service(executable_path='/usr/local/bin/geckodriver')
-    driver = webdriver.Firefox(service=service, options=options)
-    print(driver)
+    opts = FirefoxOptions()
+    opts.add_argument("--headless")
+    driver = webdriver.Firefox(options=opts)
     
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"
