@@ -51,7 +51,7 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     
     soup = BeautifulSoup(html, features="html.parser")
 
-    time.sleep(1.5)
+    time.sleep(2)
 
     title_text = soup.find('title').text
     product_name = re.sub(r' - 사이즈 & 후기.*', '', title_text)
