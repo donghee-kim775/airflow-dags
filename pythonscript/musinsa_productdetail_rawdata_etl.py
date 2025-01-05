@@ -1,15 +1,11 @@
+import requests
 import pandas as pd
 
 import argparse
-
-from bs4 import BeautifulSoup
-
-import time
 import re
 import os
 from datetime import datetime, timedelta
 import json
-import requests
 
 # 헤더 설정
 headers = {
