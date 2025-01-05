@@ -148,6 +148,7 @@ def main():
             
             merged_df = pd.DataFrame(record_list)
             write_file_path = f"{today_date}/Musinsa/ProductDetailData/{category3depth[0]}/{category4depth}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            write_file_path = bucket_path + write_file_path
             merged_df.to_parquet(write_file_path, storage_options=aws_storage_options)
 
 if __name__ == "__main__":
