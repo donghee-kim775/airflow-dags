@@ -61,9 +61,8 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     final_price = get_content_or_none(soup.find('meta', {'property': 'product:price:amount'}))
     discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:discount_rate'}))
 
-    review_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).string)
-    review_count = review_data['aggregateRating']['reviewCount']
-    review_avg_rating = review_data['aggregateRating']['ratingValue']
+    review_count = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[1]/div[14]/div[2]/div[1]/div/div[4]/div[7]/span/text()[1]').text
+    review_avg_rating = driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div[1]/div[2]/div[7]/div/span[1]').text
     
     like_counting = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[19]/div/div/span').text
     
