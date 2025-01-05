@@ -3,6 +3,7 @@ import pandas as pd
 import argparse
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver import FirefoxOptions
 
 from bs4 import BeautifulSoup
@@ -63,8 +64,8 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     review_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).string)
     review_count = review_data['aggregateRating']['reviewCount']
     review_avg_rating = review_data['aggregateRating']['ratingValue']
-
-    like_counting = get_text_or_none(soup.select_one('#root > div.sc-1f8zq2z-0.SRIds > div.sc-1wsabwr-0.cytPTm > div > div > span'))
+    
+    like_counting = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[19]/div/div/span').text
     
     created_at = datetime.now().strftime('%Y-%m-%d')
     
