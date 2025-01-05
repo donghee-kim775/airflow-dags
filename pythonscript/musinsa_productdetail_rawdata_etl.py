@@ -48,7 +48,7 @@ def et_product_detail(driver, master_category, depth4category, product_id):
 
     html = driver.page_source
     
-    soup = BeautifulSoup(html, 'html')
+    soup = BeautifulSoup(html, "html.parser")
 
     product_name = get_text_or_none(soup.find('span', class_='text-lg font-medium break-all flex-1 font-pretendard'))
 
@@ -86,9 +86,7 @@ def et_product_detail(driver, master_category, depth4category, product_id):
         "created_at": created_at,
     }
 
-    # dcit => DataFrame Record
-    df = pd.DataFrame([data])
-    return df
+    return data
     
     
 def main():
@@ -110,8 +108,6 @@ def main():
     opts.add_argument("--headless")
     driver = webdriver.Firefox(options=opts)
     
-    print(driver)
-    
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"
     today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -123,10 +119,15 @@ def main():
             file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             product_list = get_product_ids(bucket_path, file_name, aws_storage_options)
             
+            record_list = []
+            
             for product_id in product_list:
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
-                df = et_product_detail(driver, master_category, category4depth, product_id)
-                print(df)
+                record_dict = et_product_detail(driver, master_category, category4depth, product_id)
+                record_list.append(record_dict)
+            
+            merged_df = pd.DataFrame(record_list)
+            print(merged_df)
 
 if __name__ == "__main__":
     main()
