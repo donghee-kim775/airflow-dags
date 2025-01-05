@@ -1,6 +1,8 @@
 import requests
 import pandas as pd
 
+from bs4 import BeautifulSoup
+
 import argparse
 import re
 import os
@@ -147,7 +149,7 @@ def main():
             
             for product_id in product_list:
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
-                record_dict = et_product_detail(driver, master_category, category4depth, product_id)
+                record_dict = et_product_detail(master_category, category4depth, product_id)
                 record_list.append(record_dict)
             
             merged_df = pd.DataFrame(record_list)
