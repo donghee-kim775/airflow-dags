@@ -114,13 +114,7 @@ def et_product_detail(master_category, depth4category, product_id):
 
     return data
     
-    
 def main():
-    # DataFrame 출력 옵션 설정
-    pd.set_option('display.max_rows', None)  # 모든 행 표시
-    pd.set_option('display.max_columns', None)  # 모든 열 표시
-    pd.set_option('display.width', 1000)  # 출력 폭 설정
-    
     # argment parsing
     parser = argparse.ArgumentParser(description="sexual/category param")
     parser.add_argument('sexual', type=str, help='sexual')
@@ -142,8 +136,8 @@ def main():
         category3depth = list(category_info.items())[0]
         
         for category4depth in category3depth[1].values():
-            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
-            product_list = get_product_ids(bucket_path, file_name, aws_storage_options)
+            read_file_path = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            product_list = get_product_ids(bucket_path, read_file_path, aws_storage_options)
             
             record_list = []
             
@@ -153,7 +147,8 @@ def main():
                 record_list.append(record_dict)
             
             merged_df = pd.DataFrame(record_list)
-            print(merged_df)
+            write_file_path = f"{today_date}/Musinsa/ProductDetailData/{category3depth[0]}/{category4depth}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            merged_df.to_parquet(write_file_path, storage_options=aws_storage_options)
 
 if __name__ == "__main__":
     main()
