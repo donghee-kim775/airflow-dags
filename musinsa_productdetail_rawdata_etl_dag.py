@@ -1,9 +1,11 @@
 from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
 from datetime import timedelta
+from kubernetes.client import models as k8s
 
 from musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 
@@ -19,15 +21,14 @@ default_args = {
     'retry_delay': timedelta(minutes=30),
 }
 
-# DAG 정의
 with DAG(
-    dag_id='Musinsa_Ranking_RawData_EL_DAG',
+    dag_id='Musinsa_Productdetail_RawData_EL_DAG',
     default_args=default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
     start_date=days_ago(1),
     catchup=False,
-    tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
+    tags=['MUSINSA', 'PRODUCTDETAIL_RAWDATA', 'EXTRACT', 'TRANSFORM', 'LOAD', 'S3', 'K8S']
 ) as dag:
 
     # start task
@@ -62,7 +63,7 @@ with DAG(
                 name=f'{sexual[0]}_{category2depth[0]}_task',
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
-                cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
+                cmds=['python', './pythonscript/musinsa_productdetail_rawdata_etl.py'],
                 arguments=[json.dumps(sexual), json.dumps(category2depth)],
                 is_delete_operator_pod=True,
                 get_logs=True,
