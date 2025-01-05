@@ -42,7 +42,12 @@ def get_product_ids(bucket_path, file_key, aws_storage_options):
     return df['product_id'].tolist()
 
 # product detail parsing => DataFrame Record
-def et_product_detail_(html, master_category, depth4category, product_id):
+def et_product_detail(driver, master_category, depth4category, product_id):
+    url = f"https://www.musinsa.com/products/{product_id}"
+    driver.get(url)
+
+    html = driver.page_source
+    
     soup = BeautifulSoup(html, 'html')
 
     product_name = get_text_or_none(soup.find('span', class_='text-lg font-medium break-all flex-1 font-pretendard'))
@@ -85,12 +90,6 @@ def et_product_detail_(html, master_category, depth4category, product_id):
     df = pd.DataFrame([data])
     return df
     
-def get_product_detail(product_id, driver):
-    url = f"https://www.musinsa.com/products/{producit_id}"
-    driver.get(url)
-
-    html = driver.page_source
-    df = et_product_detail_(html, master_category, depth4category, product_id)
     
 def main():
     # argment parsing
@@ -123,8 +122,11 @@ def main():
         for category4depth in category3depth[1].values():
             file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             product_list = get_product_ids(bucket_path, file_name, aws_storage_options)
-            print(f"{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}")
-            print(product_list)
+            
+            for product_id in product_list:
+                master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
+                df = et_product_detail(driver, master_category, category4depth, product_id)
+                print(df)
 
 if __name__ == "__main__":
     main()
