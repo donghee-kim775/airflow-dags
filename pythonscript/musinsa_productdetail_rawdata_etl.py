@@ -2,10 +2,6 @@ import pandas as pd
 
 import argparse
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver import FirefoxOptions
-
 from bs4 import BeautifulSoup
 
 import time
@@ -13,6 +9,20 @@ import re
 import os
 from datetime import datetime, timedelta
 import json
+import requests
+
+# 헤더 설정
+headers = {
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "origin": "https://www.musinsa.com",
+    "referer": "https://www.musinsa.com/",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"'
+}
 
 aws_storage_options = {
     "key" : os.getenv('AWS_ACCESS_KEY_ID'),
@@ -43,21 +53,18 @@ def get_product_ids(bucket_path, file_key, aws_storage_options):
     return df['product_id'].tolist()
 
 # product detail parsing => DataFrame Record
-def et_product_detail(driver, master_category, depth4category, product_id):
-    print(product_id)
+def et_product_detail(master_category, depth4category, product_id):
     url = f"https://www.musinsa.com/products/{product_id}"
-    driver.get(url)
-
-    html = driver.page_source
     
-    soup = BeautifulSoup(html, features="html.parser")
-
-    time.sleep(2.5)
+    response = requests.get(url, headers=headers)
+    
+    soup = BeautifulSoup(response.text, features="html.parser")
 
     title_text = soup.find('title').text
     product_name = re.sub(r' - 사이즈 & 후기.*', '', title_text)
 
-    brand_name_kr = get_content_or_none(soup.find('meta', {'property': 'product:brand'}))
+    # brand naeme_kr, brand name_en
+    brand_name_kr = soup.find('meta', {'property': 'product:brand'}).get('content')
     brand_name_en = soup.find('div', class_='sc-11x022e-0 hzZrPp')
     brand_name_en = brand_name_en.find('a', href=True)['href'].split('brand/')[1] if brand_name_en else None
 
@@ -65,14 +72,30 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     final_price = get_content_or_none(soup.find('meta', {'property': 'product:price:amount'}))
     discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:discount_rate'}))
 
-    review_count = soup.find('span', class_='text-xs font-medium pl-0.5 pr-1 cursor-default text-black font-pretendard').text
-    review_avg_rating = soup.find('span', class_='text-xs font-normal cursor-pointer text-gray-600 font-pretendard').text
-    review_avg_rating = re.search(r'\d{1,3}(?:,\d{3})*', review_avg_rating).group().replace(',', '')
+    try:
+        # review_count, review_avg_ratin
+        json_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).string)
+        # ratingValue와 reviewCount 값 추출
+        review_count = json_data['aggregateRating']['reviewCount']
+        review_avg_rating = json_data['aggregateRating']['ratingValue']
+    except:
+        review_count = None
+        review_avg_rating = None
+    
+    url = f"https://like.musinsa.com/like/api/v2/liketypes/goods/counts"
 
-    like_counting = soup.select_one('#root > div:nth-child(1) > div:nth-child(19) > div > div > span').text
+    payload = {
+        "relationIds": [product_id]
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload).json()
+
+        like_counting = response['data']['contents']['items'][0]['count']
+    except:
+        like_counting = None
     
     created_at = datetime.now().strftime('%Y-%m-%d')
-    
     # data => dict
     data = {
         "platform": 'Musinsa',
@@ -112,12 +135,7 @@ def main():
     
     print(sexual_data)
     print(category_data)
-    
-    # Firefox driver Setting
-    opts = FirefoxOptions()
-    opts.add_argument("--headless")
-    driver = webdriver.Firefox(options=opts)
-    
+
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"
     today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")

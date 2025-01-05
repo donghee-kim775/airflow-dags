@@ -11,17 +11,7 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 WORKDIR /app
 
 # 관련 pip 설치
-RUN pip install boto3 pandas pyarrow fsspec s3fs
-RUN pip install requests selenium beautifulsoup4 webdriver-manager
-
-# Firefox 관련 설치
-RUN apt-get update && apt-get install -y firefox-esr
-
-# 최신 Geckodriver 설치 (현재 Firefox 버전과 호환되는 최신 Geckodriver를 사용)
-RUN apt-get install -y wget
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz
-RUN tar -xvzf geckodriver-v0.33.0-linux64.tar.gz
-RUN mv geckodriver /usr/local/bin/
+RUN pip install requests boto3 pandas pyarrow fsspec s3fs
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
 COPY pythonscript ./pythonscript
