@@ -104,6 +104,9 @@ def main():
     sexual_data = json.loads(args.sexual)
     category_data = json.loads(args.category_data)
     
+    print(sexual_data)
+    print(category_data)
+    
     # Chrome 드라이버 설정
     options = Options()
     options.add_argument("--headless")  # 브라우저 창을 표시하지 않음
