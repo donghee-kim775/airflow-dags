@@ -4,7 +4,7 @@ import argparse
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.service import Service
+from selenium.webdriver.firefox.service import Service
 
 from bs4 import BeautifulSoup
 
