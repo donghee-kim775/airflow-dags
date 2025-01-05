@@ -112,6 +112,7 @@ def main():
 
     service = Service(executable_path='/usr/local/bin/geckodriver')
     driver = webdriver.Firefox(service=service, options=options)
+    print(driver)
     
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"

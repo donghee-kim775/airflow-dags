@@ -15,9 +15,11 @@ RUN pip install boto3 requests pandas selenium beautifulsoup4 webdriver-manager
 
 # Firefox 관련 설치
 RUN apt-get update && apt-get install -y firefox-esr
+
+# 최신 Geckodriver 설치 (현재 Firefox 버전과 호환되는 최신 Geckodriver를 사용)
 RUN apt-get install -y wget
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
-RUN tar -xvzf geckodriver-v0.30.0-linux64.tar.gz
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz
+RUN tar -xvzf geckodriver-v0.33.0-linux64.tar.gz
 RUN mv geckodriver /usr/local/bin/
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
