@@ -48,7 +48,7 @@ def et_product_detail(driver, master_category, depth4category, product_id):
 
     html = driver.page_source
     
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, features="html.parser")
 
     product_name = get_text_or_none(soup.find('span', class_='text-lg font-medium break-all flex-1 font-pretendard'))
 
@@ -90,6 +90,11 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     
     
 def main():
+    # DataFrame 출력 옵션 설정
+    pd.set_option('display.max_rows', None)  # 모든 행 표시
+    pd.set_option('display.max_columns', None)  # 모든 열 표시
+    pd.set_option('display.width', 1000)  # 출력 폭 설정
+    
     # argment parsing
     parser = argparse.ArgumentParser(description="sexual/category param")
     parser.add_argument('sexual', type=str, help='sexual')
