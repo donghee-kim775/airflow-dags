@@ -110,8 +110,8 @@ def main():
     # Chrome 드라이버 설정
     options = Options()
     options.add_argument("--headless")  # 브라우저 창을 표시하지 않음
-    service = Service(executable_path=ChromeDriverManager().install())  # chromedriver 경로 설정
-    driver = webdriver.Chrome(service=service, options=options)
+    service = Service(executable_path='/usr/local/bin/geckodriver')  # Geckodriver 경로 설정
+    driver = webdriver.Firefox(service=service, options=options)
     
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"
