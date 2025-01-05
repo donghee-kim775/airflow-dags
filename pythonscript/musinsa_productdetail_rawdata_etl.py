@@ -3,12 +3,11 @@ import pandas as pd
 import argparse
 
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service
 from selenium.webdriver import FirefoxOptions
 
 from bs4 import BeautifulSoup
 
+import re
 import os
 from datetime import datetime, timedelta
 import json
@@ -50,7 +49,8 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     
     soup = BeautifulSoup(html, features="html.parser")
 
-    product_name = get_text_or_none(soup.find('span', class_='text-lg font-medium break-all flex-1 font-pretendard'))
+    title_text = soup.find('title').text
+    product_name = re.sub(r' - 사이즈 & 후기.*', '', title_text)
 
     brand_name_kr = get_content_or_none(soup.find('meta', {'property': 'product:brand'}))
     brand_name_en = soup.find('div', class_='sc-11x022e-0 hzZrPp')
@@ -60,9 +60,9 @@ def et_product_detail(driver, master_category, depth4category, product_id):
     final_price = get_content_or_none(soup.find('meta', {'property': 'product:price:amount'}))
     discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:discount_rate'}))
 
-    review_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).string) if soup.find('script', {'type': 'application/ld+json'}) else {}
-    review_count = review_data.get('aggregateRating', {}).get('reviewCount', None)
-    review_avg_rating = review_data.get('aggregateRating', {}).get('ratingValue', None)
+    review_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).string)
+    review_count = review_data['aggregateRating']['reviewCount']
+    review_avg_rating = review_data['aggregateRating']['ratingValue']
 
     like_counting = get_text_or_none(soup.select_one('#root > div.sc-1f8zq2z-0.SRIds > div.sc-1wsabwr-0.cytPTm > div > div > span'))
     
