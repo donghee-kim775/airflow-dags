@@ -111,6 +111,8 @@ def main():
     opts.add_argument("--headless")
     driver = webdriver.Firefox(options=opts)
     
+    print(driver)
+    
     category2depth = mapping_2depth_kor(category_data[0])
     bucket_path = "s3a://project4-silver-data/"
     today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
