@@ -59,8 +59,8 @@ with DAG(
             category2depth = list(categories.items())[0]
             
             category_task = KubernetesPodOperator(
-                task_id=f"{sexual[0]}_{category2depth[0]}_task",
-                name=f'{sexual[0]}_{category2depth[0]}_task',
+                task_id=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
+                name=f'product_detail_{sexual[0]}_{category2depth[0]}_task',
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=['python', './pythonscript/musinsa_productdetail_rawdata_etl.py'],

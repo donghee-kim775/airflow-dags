@@ -13,5 +13,8 @@ WORKDIR /app
 # boto3 설치
 RUN pip install boto3 requests pandas selenium beautifulsoup4 webdriver-manager
 
+# selenium Webdriver 설치
+RUN apt-get update && apt-get install -y libnss3 libatk-bridge2.0-0 libx11-xcb1
+
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
 COPY pythonscript ./pythonscript
