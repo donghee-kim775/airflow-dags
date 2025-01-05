@@ -3,10 +3,8 @@ import pandas as pd
 import argparse
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.service import Service
 
 from bs4 import BeautifulSoup
 
@@ -107,10 +105,12 @@ def main():
     print(sexual_data)
     print(category_data)
     
-    # Chrome 드라이버 설정
+    # Firefox driver Setting
     options = Options()
-    options.add_argument("--headless")  # 브라우저 창을 표시하지 않음
-    service = Service(executable_path='/usr/local/bin/geckodriver')  # Geckodriver 경로 설정
+    options.headless = True
+    options.set_preference('marionette', True)
+
+    service = Service(executable_path='/usr/local/bin/geckodriver')
     driver = webdriver.Firefox(service=service, options=options)
     
     category2depth = mapping_2depth_kor(category_data[0])
