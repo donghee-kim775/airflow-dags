@@ -53,7 +53,7 @@ with DAG(
             s3_copy_redshift_task = S3ToRedshiftOperator(
                 task_id=f"load_ranking_{mapping3depth_en(category3depth)}_data",
                 schema="silverlayer",
-                table="musinsa_ranking_silver",
+                table="product_detail_tb",
                 s3_bucket="project4-silver-data",
                 s3_key=f"{today_date}/Musinsa/ProductDetailData/{category3depth}/",
                 copy_options=['FORMAT AS PARQUET'],

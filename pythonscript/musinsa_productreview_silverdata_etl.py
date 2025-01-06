@@ -8,9 +8,6 @@ import requests
 import pandas as pd
 import pyarrow.fs as fs
 
-from s3_validate import get_file_list
-
-
 url = "https://goods.musinsa.com/api2/review/v1/view/list"
 
 headers = {
@@ -31,8 +28,7 @@ params = {
     "isExperience" : "false"
 }
 
-# today_date = datetime.today().strftime("%Y%m%d")
-today_date = "2025-01-04"
+today_date = datetime.today().strftime("%Y-%m-%d")
 
 bucket_path = "project4-silver-data/"
 
@@ -65,7 +61,7 @@ def main():
 
     category3depth = args.category3depth
     category4depth_list = json.loads(args.category4depth_list)
-    file_key = f"2025-01-04/Musinsa/ProductDetailData/{category3depth}/"
+    file_key = f"{today_date}/Musinsa/ProductDetailData/{category3depth}/"
     
     path = bucket_path + file_key
     

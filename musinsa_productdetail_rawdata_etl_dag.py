@@ -65,7 +65,7 @@ with DAG(
                 image='ehdgml7755/project4-custom:latest',
                 cmds=['python', './pythonscript/musinsa_productdetail_rawdata_etl.py'],
                 arguments=[json.dumps(sexual), json.dumps(category2depth)],
-                is_delete_operator_pod=False,
+                is_delete_operator_pod=True,
                 get_logs=True,
             )
             

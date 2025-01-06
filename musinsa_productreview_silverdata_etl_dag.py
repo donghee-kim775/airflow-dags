@@ -62,7 +62,7 @@ with DAG(
                 image='ehdgml7755/project4-custom:latest',
                 cmds=["python", "./pythonscript/musinsa_productreview_silverdata_etl.py"],
                 arguments = [category3depth[0], json.dumps(category3depth[1])],
-                is_delete_operator_pod = False,
+                is_delete_operator_pod = True,
                 get_logs = True
             )
             
