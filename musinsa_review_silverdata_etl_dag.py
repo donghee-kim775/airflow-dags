@@ -51,15 +51,13 @@ with DAG(
         start >> category2depth_task
         
         for category3depth in category3depth_list:
-            arguments = [category3depth[0], json.dumps(category3depth[1])]
-            
             category3depth_task = KubernetesPodOperator(
                 task_id=f"review_{category3depth[0]}_task",
                 name=f"review_{category3depth[0]}_task",
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=["python", "./pythonscript/musinsa_review_silverdata_etl.py"],
-                argument = category3depth[0],
+                arguments = [category3depth[0], json.dumps(category3depth[1])],
                 is_delete_operator_pod = False,
                 get_logs = True
             )
