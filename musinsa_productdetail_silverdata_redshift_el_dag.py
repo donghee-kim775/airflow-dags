@@ -49,17 +49,18 @@ with DAG(
         
         start >> categorydepth_task
         for category3depth in CATEGORY2DEPTH_MAPPING[category2depth]:
+            
             s3_copy_redshift_task = S3ToRedshiftOperator(
-            task_id=f"load_ranking_{mapping3depth_en(category3depth)}_data",
-            schema="silverlayer",
-            table="musinsa_ranking_silver",
-            s3_bucket="project4-silver-data",
-            s3_key=f"{today_date}/Musinsa/RankingData/{category3depth}/",
-            copy_options=['FORMAT AS PARQUET'],
-            aws_conn_id="aws_default",
-            redshift_conn_id="redshift_default",
-            task_concurrency=1 # 동시 태스크 실행 개수 => 단순 copy지만 쿼리 부하가 되려나...? 우선 걸어두었습니다.
-        )
+                task_id=f"load_ranking_{mapping3depth_en(category3depth)}_data",
+                schema="silverlayer",
+                table="musinsa_ranking_silver",
+                s3_bucket="project4-silver-data",
+                s3_key=f"{today_date}/Musinsa/ProductDetailData/{category3depth}/",
+                copy_options=['FORMAT AS PARQUET'],
+                aws_conn_id="aws_default",
+                redshift_conn_id="redshift_default",
+                task_concurrency=1 # 동시 태스크 실행 개수 => 단순 copy지만 쿼리 부하가 되려나...? 우선 걸어두었습니다.
+            )
             
         categorydepth_task >> s3_copy_redshift_task >> wait
         
