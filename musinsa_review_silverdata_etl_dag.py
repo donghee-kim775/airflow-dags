@@ -57,7 +57,7 @@ with DAG(
         for category3depth in category3depth_list:
             category3depth_task = KubernetesPodOperator(
                 task_id=f"review_{mapping3depth_en(category3depth[0])}_task",
-                name=f"review_{mapping2depth_en(category3depth[0])}_task",
+                name=f"review_{mapping3depth_en(category3depth[0])}_task",
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=["python", "./pythonscript/musinsa_productreview_silverdata_etl.py"],
