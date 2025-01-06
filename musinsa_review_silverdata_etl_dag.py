@@ -59,7 +59,7 @@ with DAG(
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
                 cmds=["python", "./pythonscript/musinsa_review_silverdata_etl.py"],
-                argument = [category3depth[0]],
+                argument = category3depth[0],
                 is_delete_operator_pod = False,
                 get_logs = True
             )
