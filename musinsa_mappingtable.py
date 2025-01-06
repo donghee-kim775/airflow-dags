@@ -112,3 +112,37 @@ CATEGORY2DEPTH_MAPPING = {
         "스커트": ["미니스커트", "미디스커트", "롱스커트"]
     }
 }
+
+def mapping2depth_en(depth2category):
+    if depth2category == "신발":
+        return "shoes"
+    elif depth2category == "아우터":
+        return "outer"
+    elif depth2category == "상의":
+        return "top"
+    elif depth2category == "하의":
+        return "bottom"
+
+def mapping3depth_en(depth3category):
+    if depth3category == "전체":
+        return "shoes"
+    elif depth3category == "재킷":
+        return "jacket"
+    elif depth3category == "폴리스":
+        return "police"
+    elif depth3category == "코트":
+        return "coat"
+    elif depth3category == "패딩":
+        return "padding"
+    elif depth3category == "기타":
+        return "etcouter"
+    elif depth3category == "티셔츠":
+        return "tshirt"
+    elif depth3category == "셔츠":
+        return "shirt"
+    elif depth3category == "니트":
+        return "knit"
+    elif depth3category == "팬츠":
+        return "pants"
+    elif depth3category == "원피스":
+        return "onepiece"
