@@ -89,10 +89,20 @@ def main():
         df_list = [pd.read_parquet(file, storage_options=aws_storage_options) for file in parquet_files]
         merge_df = pd.concat(df_list)
         
-        product_ids = merge_df['product_id'].tolist()
+        # 남 녀 중복 product_id 제거
+        product_ids = set(merge_df['product_id'].tolist())
+        
+        output_path = f"s3://{bucket_path}{today_date}/Musinsa/ReviewData/{category3depth}/{category4depth}.parquet"
+        
+        all_reviews_df_list = []
+            
         for product_id in product_ids:
             review_df = et_productreview(product_id)
             print(review_df)
+            all_reviews_df_list.append(review_df)
             
+        all_reviews_df = pd.concat(all_reviews_df_list)
+        all_reviews_df.to_parquet(output_path, storage_options=aws_storage_options)
+        
 if __name__ == "__main__":
     main()
