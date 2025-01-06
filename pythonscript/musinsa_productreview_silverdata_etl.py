@@ -6,6 +6,7 @@ import re
 
 import requests
 import pandas as pd
+import pyarrow.fs as fs
 
 from s3_validate import get_file_list
 
@@ -66,7 +67,18 @@ def main():
     file_key = f"2025-01-04/Musinsa/ProductDetailData/{category3depth}/"
     
     path = bucket_path + file_key
-    files = get_file_list(path)
+    
+    aws_storage_options = {
+        "key" : os.getenv('AWS_ACCESS_KEY_ID'),
+        "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
+    }
+    
+    s3 = fs.S3FileSystem(
+            access_key=os.getenv('AWS_ACCESS_KEY_ID'),
+            secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
+    
+    files = s3.get_file_info(fs.FileSelector(base_dir=path, recursive=True))
     
     for category4depth in category4depth_list:
         pattern = re.compile(rf'.*_({category4depth})\.parquet$')
