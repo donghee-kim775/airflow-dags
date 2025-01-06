@@ -1,5 +1,4 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
 from airflow.providers.amazon.aws.transfers.s3_to_redshift import S3ToRedshiftOperator
 from airflow.operators.dummy import DummyOperator
 
@@ -67,4 +66,3 @@ with DAG(
         
         wait >> end
         
-            
