@@ -18,7 +18,7 @@ default_args = {
 }
 
 # today_date
-today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+today_date = (datetime.now()).strftime("%Y-%m-%d")
 
 with DAG(
     dag_id='Musinsa_Ranking_Table_S3_Load_Redshift',
