@@ -1,15 +1,22 @@
 import boto3
 from botocore.exceptions import ClientError
+import os
 
+import pandas as pd
 import json
 import logging
 
+aws_storage_options = {
+    "key" : os.getenv('AWS_ACCESS_KEY_ID'),
+    "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
+}
+
 # connection to s3
-def connect_s3(aws_access_key_id, aws_secret_access_key, region_name):
+def connect_s3():
     s3_client = boto3.client(
         's3', 
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
         region_name='ap-northeast-2'
     )
     return s3_client
@@ -47,3 +54,9 @@ def validate_and_upload_s3_file(s3_client, bucket_name, s3_key, json_data):
         logging.info(f'{s3_key} does not exist in {bucket_name}')
         upload_json_to_s3(s3_client, bucket_name, s3_key, json_data)
         logging.info(f"File {s3_key} uploaded successfully.")
+
+# product_id 추출
+def get_product_ids(bucket_path, file_key):
+    file_path = bucket_path + file_key
+    df = pd.read_parquet(file_path, storage_options=aws_storage_options)
+    return df['product_id'].tolist()

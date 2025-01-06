@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 
 from bs4 import BeautifulSoup
+from s3_validate import get_product_ids
 
 import argparse
 import re
@@ -22,11 +23,6 @@ headers = {
     "sec-ch-ua-platform": '"Windows"'
 }
 
-aws_storage_options = {
-    "key" : os.getenv('AWS_ACCESS_KEY_ID'),
-    "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
-}
-
 def mapping_2depth_kor(depth2category):
     if depth2category == 'top':
         return '상의'
@@ -43,12 +39,6 @@ def get_text_or_none(element):
 
 def get_content_or_none(element):
     return element['content'] if element else None
-
-# product_id 추출
-def get_product_ids(bucket_path, file_key, aws_storage_options):
-    file_path = bucket_path + file_key
-    df = pd.read_parquet(file_path, storage_options=aws_storage_options)
-    return df['product_id'].tolist()
 
 # product detail parsing => DataFrame Record
 def et_product_detail(master_category, depth4category, product_id):
@@ -137,7 +127,7 @@ def main():
         
         for category4depth in category3depth[1].values():
             read_file_path = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
-            product_list = get_product_ids(bucket_path, read_file_path, aws_storage_options)
+            product_list = get_product_ids(bucket_path, read_file_path)
             
             record_list = []
             
