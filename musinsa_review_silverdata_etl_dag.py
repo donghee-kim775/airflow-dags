@@ -48,6 +48,10 @@ with DAG(
             task_id=f"{category2depth}_task"
         )
         
+        wait_task = DummyOperator(
+            task_id=f"{category2depth}_wait"
+        )
+        
         start >> category2depth_task
         
         for category3depth in category3depth_list:
@@ -62,4 +66,6 @@ with DAG(
                 get_logs = True
             )
             
-            category2depth_task >> category3depth_task
+            category2depth_task >> category3depth_task >> wait_task
+        
+        wait_task >> end
