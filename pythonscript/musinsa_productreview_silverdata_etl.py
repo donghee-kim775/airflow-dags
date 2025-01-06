@@ -77,8 +77,7 @@ def main():
             access_key=os.getenv('AWS_ACCESS_KEY_ID'),
             secret_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
             region='ap-northeast-2',  # 올바른 리전 설정 (예: 서울 리전)
-            endpoint_override='https://s3.ap-northeast-2.amazonaws.com'  # 엔드포인트 설정
-            
+            endpoint_override='https://s3.ap-northeast-2.amazonaws.com'  # 엔드포인트 설정    
     )
     
     files = s3.get_file_info(fs.FileSelector(base_dir=path, recursive=True))
@@ -106,3 +105,4 @@ def main():
         
 if __name__ == "__main__":
     main()
+    
