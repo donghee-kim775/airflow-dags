@@ -60,7 +60,7 @@ with DAG(
                 name=f"review_{mapping2depth_en(category3depth[0])}_task",
                 namespace='airflow',
                 image='ehdgml7755/project4-custom:latest',
-                cmds=["python", "./pythonscript/musinsa_review_silverdata_etl.py"],
+                cmds=["python", "./pythonscript/musinsa_productreview_silverdata_etl.py"],
                 arguments = [category3depth[0], json.dumps(category3depth[1])],
                 is_delete_operator_pod = False,
                 get_logs = True
