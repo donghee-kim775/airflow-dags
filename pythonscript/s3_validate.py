@@ -12,6 +12,11 @@ aws_storage_options = {
     "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
 }
 
+s3 = fs.S3FileSystem(
+    access_key=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+)
+
 # connection to s3
 def connect_s3():
     s3_client = boto3.client(
@@ -63,10 +68,6 @@ def get_product_ids(bucket_path, file_key):
     return df['product_id'].tolist()
 
 def get_file_list(path):
-    s3 = fs.S3FileSystem(
-        access_key=os.getenv('AWS_ACCESS_KEY_ID'),
-        secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
-    )
     fs = fs.FileSelector(base_dir=path, recursive=True)
     files = s3.get_file_info(fs)
     return files
