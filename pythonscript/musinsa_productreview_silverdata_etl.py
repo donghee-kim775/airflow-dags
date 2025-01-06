@@ -30,11 +30,6 @@ params = {
     "isExperience" : "false"
 }
 
-s3 = fs.S3FileSystem(
-        access_key=
-        secret_key=
-)
-
 today_date = datetime.today().strftime("%Y%m%d")
 
 bucket_path = "project4-silver-data/"

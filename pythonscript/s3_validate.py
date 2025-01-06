@@ -64,7 +64,7 @@ def get_product_ids(bucket_path, file_key):
 
 def get_file_list(path):
     s3 = fs.S3FileSystem(
-        access_key=os.getenv('AWS_ACCESS_KEY_ID')
+        access_key=os.getenv('AWS_ACCESS_KEY_ID'),
         secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
     )
     fs = fs.FileSelector(base_dir=path, recursive=True)
