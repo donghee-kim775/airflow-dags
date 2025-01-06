@@ -77,7 +77,7 @@ def main():
     s3 = fs.S3FileSystem(
             access_key=os.getenv('AWS_ACCESS_KEY_ID'),
             secret_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            region='ap-northeast-2',  # 올바른 리전 설정 (예: 서울 리전)
+            region='ap-northeast-2',  # 올바른 리전 설정 (default : us-east-1)
             endpoint_override='https://s3.ap-northeast-2.amazonaws.com'  # 엔드포인트 설정    
     )
     
