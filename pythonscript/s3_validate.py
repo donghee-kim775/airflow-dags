@@ -7,16 +7,6 @@ import json
 import logging
 from pyarrow import fs
 
-aws_storage_options = {
-    "key" : os.getenv('AWS_ACCESS_KEY_ID'),
-    "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
-}
-
-s3 = fs.S3FileSystem(
-    access_key=os.getenv('AWS_ACCESS_KEY_ID'),
-    secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
-)
-
 # connection to s3
 def connect_s3():
     s3_client = boto3.client(
@@ -63,11 +53,20 @@ def validate_and_upload_s3_file(s3_client, bucket_name, s3_key, json_data):
 
 # product_id 추출
 def get_product_ids(bucket_path, file_key):
+    aws_storage_options = {
+        "key" : os.getenv('AWS_ACCESS_KEY_ID'),
+        "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
+    }
     file_path = bucket_path + file_key
+    
     df = pd.read_parquet(file_path, storage_options=aws_storage_options)
     return df['product_id'].tolist()
 
 def get_file_list(path):
+    s3 = fs.S3FileSystem(
+        access_key=os.getenv('AWS_ACCESS_KEY_ID'),
+        secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
     fs = fs.FileSelector(base_dir=path, recursive=True)
     files = s3.get_file_info(fs)
     return files
