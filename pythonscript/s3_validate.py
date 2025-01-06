@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import json
 import logging
+import pyarrow.fs as fs
 
 aws_storage_options = {
     "key" : os.getenv('AWS_ACCESS_KEY_ID'),
@@ -60,3 +61,12 @@ def get_product_ids(bucket_path, file_key):
     file_path = bucket_path + file_key
     df = pd.read_parquet(file_path, storage_options=aws_storage_options)
     return df['product_id'].tolist()
+
+def get_file_list(path):
+    s3 = fs.S3FileSystem(
+        access_key=os.getenv('AWS_ACCESS_KEY_ID')
+        secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
+    fs = fs.FileSelector(base_dir=path, recursive=True)
+    files = s3.get_file_info(fs)
+    return files
