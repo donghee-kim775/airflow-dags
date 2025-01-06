@@ -5,7 +5,8 @@ from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
 from datetime import timedelta, datetime
-from kubernetes.client import models as k8s
+
+from musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
 
 # DAG 기본 설정
 default_args = {
@@ -39,23 +40,23 @@ with DAG(
     )
     
 
-    for categorydepth in CATEGORY_PARAMS.keys():
+    for category2depth in CATEGORY2DEPTH_MAPPING:
         categorydepth_task = DummyOperator(
-            task_id=f'{categorydepth}_task'
+            task_id=f'{mapping2depth_en(category2depth)}_task'
         )
         
         wait = DummyOperator(
-            task_id=f"{categorydepth}_wait"
+            task_id=f"{mapping2depth_en(category2depth)}_wait"
         )
         
         start >> categorydepth_task
-        for category in CATEGORY_PARAMS[categorydepth]:
+        for category3depth in CATEGORY2DEPTH_MAPPING[category2depth]:
             s3_copy_redshift_task = S3ToRedshiftOperator(
-                task_id=f"load_{category}_data",
+                task_id=f"load_ranking_{mapping3depth_en(category3depth)}_data",
                 schema="silverlayer",
                 table="musinsa_ranking_silver",
                 s3_bucket="project4-silver-data",
-                s3_key=f"{today_date}/Musinsa/RankingData/{category}/",
+                s3_key=f"{today_date}/Musinsa/RankingData/{category3depth}/",
                 copy_options=['FORMAT AS PARQUET'],
                 aws_conn_id="aws_default",
                 redshift_conn_id="redshift_default",
