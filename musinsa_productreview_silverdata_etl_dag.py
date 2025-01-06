@@ -21,7 +21,7 @@ default_args = {
 
 # DAG 정의
 with DAG(
-    dag_id='Musinsa_Review_SilverData_ETL_DAG',
+    dag_id='Musinsa_ProductReview_SilverData_ETL_DAG',
     default_args=default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',

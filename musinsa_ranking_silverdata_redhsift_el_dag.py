@@ -27,7 +27,7 @@ with DAG(
     schedule_interval='0 0 * * *',
     start_date=days_ago(1),
     catchup=False,
-    tags=['musinsa', 'ranking_rawdata', 'Extract', 'Load', 'S3', 'k8s']
+    tags=['MUSINSA', 'SILVERDATA', 'RAKINGDATA', 'LOAD', 'S3', 'REDSHIFT']
 ) as dag:
 
     start = DummyOperator(
