@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import json
 import logging
-import pyarrow.fs as fs
+from pyarrow import fs
 
 aws_storage_options = {
     "key" : os.getenv('AWS_ACCESS_KEY_ID'),
