@@ -32,7 +32,7 @@ params = {
 }
 
 # today_date = datetime.today().strftime("%Y%m%d")
-today_data = "2025-01-04"
+today_date = "2025-01-04"
 
 bucket_path = "project4-silver-data/"
 
