@@ -61,3 +61,5 @@ with DAG(
                 is_delete_operator_pod = False,
                 get_logs = True
             )
+            
+            category2depth_task >> category3depth_task
