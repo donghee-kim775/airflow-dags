@@ -114,6 +114,8 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
             "created_at": datetime.now().strftime('%Y-%m-%d'),
         }
         
+        print(data)
+        
         json_data = json.dumps(data, ensure_ascii=False)
         s3_module.upload_json_to_s3(bronze_bucket, s3_key, json_data)
     
