@@ -23,7 +23,7 @@ class DEFAULT_SPARK:
         }
 
     spark_conf={
-            "spark.hadoop.fs.s3a.access.key": os.getev("aws_access_key_id"),
+            "spark.hadoop.fs.s3a.access.key": os.getenv("aws_access_key_id"),
             "spark.hadoop.fs.s3a.secret.key": os.getenv("aws_secret_access_key"),
             "spark.hadoop.fs.s3a.endpoint": "s3.amazonaws.com",
             "spark.kubernetes.driver.deleteOnTermination": "true",

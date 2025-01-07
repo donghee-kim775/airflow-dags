@@ -11,8 +11,6 @@ from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 
 import json
 
-
-
 with DAG(
     dag_id='Musinsa_Productdetail_RawData_EL_DAG',
     default_args=default_args,
