@@ -64,7 +64,7 @@ def main():
             product_ids += temp_ids
         
         for product_id in set(product_ids):
-            output_path = f"{today_date}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/{product_id}.json"
+            output_path = f"{bronze_bucket}/{today_date}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/{product_id}.json"
             el_productreview(product_id, output_path)
             
 if __name__ == "__main__":
