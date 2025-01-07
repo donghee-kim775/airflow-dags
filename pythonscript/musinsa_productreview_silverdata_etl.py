@@ -8,7 +8,9 @@ import requests
 import pandas as pd
 import pyarrow.fs as fs
 
-from modules.config import musinsa_config
+import pendulum
+
+from modules.config import Musinsa_Config
 
 url = "https://goods.musinsa.com/api2/review/v1/view/list"
 
@@ -21,13 +23,13 @@ params = {
     "isExperience" : "false"
 }
 
-today_date = datetime.today().strftime("%Y-%m-%d")
+today_date = Musinsa_Config.today_date
 
 bucket_path = "project4-silver-data/"
 
 def et_productreview(product_id):
     params["goodsNo"] = product_id
-    response = requests.get(url, headers=musinsa_config.headers, params=params)
+    response = requests.get(url, headers=Musinsa_Config.HEADERS, params=params)
     data = response.json()['data']
     
     review_data_list = []

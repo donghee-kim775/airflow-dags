@@ -1,4 +1,5 @@
 import os
+import pendulum
 
 class Musinsa_Config:
     HEADERS = {
@@ -12,6 +13,10 @@ class Musinsa_Config:
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"'
     }
+    
+    local_tz = pendulum.timezone("Asia/Seoul")
+    
+    today_date = pendulum.now(tz=local_tz).to_date_string()
     
 class AWS_Config:
     AWS_ACCESS_KEY_ID=os.getenv('AWS_ACCESS_KEY_ID')

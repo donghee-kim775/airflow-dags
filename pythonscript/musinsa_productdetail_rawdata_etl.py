@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 from bs4 import BeautifulSoup
-from pythonscript.modules.s3_validate import get_product_ids
+from pythonscript.modules.s3_module import get_product_ids
 
 import argparse
 import re
