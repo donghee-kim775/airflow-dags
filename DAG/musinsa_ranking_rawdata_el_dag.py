@@ -8,7 +8,7 @@ from datetime import datetime
 import pendulum
 
 from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
-from modules.config import DEFAULT_DAG
+from DAG.modules.config import DEFAULT_DAG
 
 import json
 
