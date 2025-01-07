@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 with DAG(
-    dag_id='Musinsa_Productdetail_RawData_EL_DAG',
+    dag_id='Musinsa_ProductDetail_RawData_EL_DAG',
     default_args=DEFAULT_DAG.default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
