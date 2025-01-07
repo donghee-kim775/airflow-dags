@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+import pendulum
 
 class DEFAULT_SPARK:
     driver_config={
@@ -39,4 +40,6 @@ class DEFAULT_DAG:
         'retries': 24,
         'retry_delay': timedelta(minutes=30),
     }
+    
+    local_tz = pendulum.timezone("Asia/Seoul")
     
