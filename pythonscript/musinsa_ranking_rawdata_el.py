@@ -24,7 +24,7 @@ params = {
 local_tz = pendulum.timezone("Asia/Seoul")
 today_date = pendulum.now(tz=local_tz).to_date_string()
 
-print(today_date)
+print("today_date : ", today_date)
 
 # mapping table - 2depth 카테고리를 이용해 airflow에서 task를 분기 중
 # task 명은 영어로 만들어야 함. 하지만 파일 적재는 한국어로 통일해서 적재 계획 (4depth가 한국어)

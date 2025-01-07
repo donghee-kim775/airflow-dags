@@ -11,7 +11,7 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 WORKDIR /app
 
 # 관련 pip 설치
-RUN pip install requests boto3 pandas pyarrow fsspec s3fs beautifulsoup4
+RUN pip install requests boto3 pandas pyarrow fsspec s3fs beautifulsoup4 pendulum
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
 COPY pythonscript ./pythonscript
