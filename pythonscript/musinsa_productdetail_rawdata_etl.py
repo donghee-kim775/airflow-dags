@@ -132,14 +132,13 @@ def main():
     print(category_data)
 
     category2depth = mapping_2depth_kor(category_data[0])
-    today_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
     
     for category_info in category_data[1]:
         category3depth = list(category_info.items())[0]
         
         for category4depth in category3depth[1].values():
             silver_bucket = "project4-silver-data"
-            read_file_path = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            read_file_path = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             file_path = f"{silver_bucket}/{read_file_path}"
             product_lists = s3_module.get_product_ids(file_path)
             
