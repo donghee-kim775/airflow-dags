@@ -44,12 +44,12 @@ def main():
     category4depth_list = json.loads(args.category4depth_list)
     
     # product_id list 불러오기
-    bucket_path = "project4-silver-data/"
-    file_key = f"{today_date}/Musinsa/ProductDetailData/{category3depth}/"
+    silver_bucket = "project4-silver-data/"
+    file_key = f"{today_date}/Musinsa/RankingData/{category3depth}/"
     
     s3 = s3_module.connect_s3fs()
     
-    base_path = bucket_path + file_key
+    base_path = silver_bucket + file_key
     
     files = s3.get_file_info(fs.FileSelector(base_dir=base_path, recursive=True))
     
