@@ -65,6 +65,7 @@ def main():
     
     # request
     for category4depth in category4depth_list:
+        print(f"Category : {category3depth}_{category4depth} Crawler Start")
         directory_pattern = re.compile(rf'.*{category4depth}\.parquet$')
         directories = [file for file in files if file.type == fs.FileType.Directory and directory_pattern.match(file.path)]
         
