@@ -139,8 +139,10 @@ def main():
         category3depth = list(category_info.items())[0]
         
         for category4depth in category3depth[1].values():
+            bronze_bucket = "project4-raw-data"
             read_file_path = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
-            product_lists = s3_module.get_product_ids(bucket_path, read_file_path)
+            file_path = f"{bronze_bucket}/{read_file_path}"
+            product_lists = s3_module.get_product_ids(file_path)
             
             for product_list in porductid_list_iterable(product_lists):
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
