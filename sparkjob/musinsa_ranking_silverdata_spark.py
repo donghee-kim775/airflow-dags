@@ -84,14 +84,16 @@ def main():
                     input_path = f"s3a://project4-raw-data/{today_date}/Musinsa/RankingData/{file_name}.json"
                 
                     # output - filepath 조합
-                    output_path = f"s3a://project4-silver-data/{today_date}/Musinsa/RankingData/{file_name}.parquet"
+                    table_output_path = f"s3a://project4-silver-data/{today_date}/Musinsa/RankingData/{file_name}.parquet"
+                    productids_output_path = f"s3a://project4-silver-data/{today_date}/Musinsa/RankingData/{file_name}.json"
                     
                     master_category_code = f"{sexual}-{category2depth}-{category3depth}"
                     
-                    sexualeng = "F" if sexual == "여성" else "M" if sexual == "남성" else None
-                    
                     cleaned_df = making_ranking_table(spark, input_path ,master_category_code, today_date)
-                    cleaned_df.write.mode("overwrite").parquet(output_path)
+                    product_ids_df = cleaned_df.select("product_id")
+                    
+                    cleaned_df.write.mode("overwrite").parquet(table_output_path)
+                    product_ids_df.write.mode("overwrite").json(productids_output_path)
                     
 if __name__ == "__main__":
     main()

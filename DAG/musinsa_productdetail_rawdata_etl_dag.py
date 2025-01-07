@@ -8,12 +8,13 @@ from datetime import timedelta
 from kubernetes.client import models as k8s
 
 from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+from DAG.modules.config import DEFAULT_DAG
 
 import json
 
 with DAG(
     dag_id='Musinsa_Productdetail_RawData_EL_DAG',
-    default_args=default_args,
+    default_args=DEFAULT_DAG.default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
     start_date=days_ago(1),
