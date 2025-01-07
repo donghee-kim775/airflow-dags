@@ -29,6 +29,7 @@ with DAG(
                 task_id="end"
     )
     
+    
     # SEXUAL_CATEGORY_DYNAMIC_PARAMS
     # dct_1 => 여성 dct / dct_2 => 남성 dct
     for dct in SEXUAL_CATEGORY_DYNAMIC_PARAMS:
