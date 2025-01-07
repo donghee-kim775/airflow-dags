@@ -3,7 +3,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 from airflow.operators.dummy import DummyOperator
 
 import json
-import datetime
+from datetime import datetime
 
 from DAG.modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
 from DAG.modules.config import DEFAULT_DAG
