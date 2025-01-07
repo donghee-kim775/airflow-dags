@@ -27,7 +27,6 @@ PARAMS = {
 
 TODAY_DATE = Musinsa_Config.today_date
 
-
 def porductid_list_iterable(iterable):
     for i in range(0, len(iterable), LIST_SIZE):
         yield iterable[i:i + LIST_SIZE]

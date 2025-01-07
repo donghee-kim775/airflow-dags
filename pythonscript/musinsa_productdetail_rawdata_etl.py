@@ -1,16 +1,23 @@
-import requests
-import pandas as pd
-
-from bs4 import BeautifulSoup
-from pythonscript.modules.s3_module import get_product_ids
-
+import time
 import argparse
+import requests
 import re
-import os
 from datetime import datetime, timedelta
 import json
+import threading
 
-from modules.config import musinsa_config, aws_config
+from bs4 import BeautifulSoup
+
+from modules.config import Musinsa_Config
+import modules.s3_module as s3_module
+
+TODAY_DATE = Musinsa_Config.today_date
+
+LIST_SIZE = 10
+
+def porductid_list_iterable(iterable):
+    for i in range(0, len(iterable), LIST_SIZE):
+        yield iterable[i:i + LIST_SIZE]
 
 def mapping_2depth_kor(depth2category):
     if depth2category == 'top':
@@ -29,11 +36,10 @@ def get_text_or_none(element):
 def get_content_or_none(element):
     return element['content'] if element else None
 
-# product detail parsing => DataFrame Record
-def et_product_detail(master_category, depth4category, product_id):
+def et_product1_detail(product_id):
     url = f"https://www.musinsa.com/products/{product_id}"
     
-    response = requests.get(url, headers=musinsa_config.headers)
+    response = requests.get(url, headers=Musinsa_Config.HEADERS)
     
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -59,6 +65,11 @@ def et_product_detail(master_category, depth4category, product_id):
         review_count = None
         review_avg_rating = None
     
+    image_tag = soup.find('meta', attrs={'property': 'og:image'})
+    
+    return product_name, brand_name_kr, brand_name_en, original_price, final_price, discount_rate, review_count, review_avg_rating, image_tag
+
+def et_product2_detail(product_id):
     url = f"https://like.musinsa.com/like/api/v2/liketypes/goods/counts"
 
     payload = {
@@ -66,32 +77,45 @@ def et_product_detail(master_category, depth4category, product_id):
     }
     
     try:
-        response = requests.post(url, headers=musinsa_config.headers, json=payload).json()
+        response = requests.post(url, headers=Musinsa_Config.HEADERS, json=payload).json()
 
         like_counting = response['data']['contents']['items'][0]['count']
     except:
         like_counting = None
-    
-    created_at = datetime.now().strftime('%Y-%m-%d')
-    # data => dict
-    data = {
-        "platform": 'Musinsa',
-        "master_category": master_category,
-        "small_category": depth4category,
-        "product_id": product_id,
-        "product_name": product_name,
-        "brand_name_kr": brand_name_kr,
-        "brand_name_en": brand_name_en,
-        "original_price": original_price,
-        "final_price": final_price,
-        "discount_rate": discount_rate,
-        "review_count": review_count,
-        "review_avg_rating": review_avg_rating,
-        "like_counting": like_counting,
-        "created_at": created_at,
-    }
 
-    return data
+    return like_counting
+
+# product detail parsing => DataFrame Record
+def et_product_detail(master_category, depth4category, product_id_list, key):
+    for product_id in product_id_list:
+        bronze_bucket = "project4-raw-data"
+        s3_key = key + f"{product_id}.json"
+        time.sleep(0.5)
+        # request api
+        product_name, brand_name_kr, brand_name_en, original_price, final_price, discount_rate, review_count, review_avg_rating, image_tag = et_product1_detail(product_id)
+        like_counting = et_product2_detail(product_id)
+        
+        # data => dict
+        data = {
+            "platform": 'Musinsa',
+            "master_category": master_category,
+            "small_category": depth4category,
+            "product_id": product_id,
+            "product_name": product_name,
+            "brand_name_kr": brand_name_kr,
+            "brand_name_en": brand_name_en,
+            "original_price": original_price,
+            "final_price": final_price,
+            "discount_rate": discount_rate,
+            "review_count": review_count,
+            "review_avg_rating": review_avg_rating,
+            "like_counting": like_counting,
+            "image_src" : image_tag,
+            "created_at": datetime.now().strftime('%Y-%m-%d'),
+        }
+        
+        json_data = json.dumps(data, ensure_ascii=False)
+        s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
     
 def main():
     # argment parsing
@@ -116,20 +140,14 @@ def main():
         
         for category4depth in category3depth[1].values():
             read_file_path = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
-            product_list = get_product_ids(bucket_path, read_file_path)
+            product_lists = s3_module.get_product_ids(bucket_path, read_file_path)
             
-            record_list = []
-            
-            for product_id in product_list:
+            for product_list in porductid_list_iterable(product_lists):
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
-                record_dict = et_product_detail(master_category, category4depth, product_id)
-                record_list.append(record_dict)
+                key = f"{TODAY_DATE}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/"
+                t = threading.Thread(target=et_product_detail, args = (master_category, category4depth, product_list, key))
+                t.start()
             
-            merged_df = pd.DataFrame(record_list)
-            write_file_path = f"{today_date}/Musinsa/ProductDetailData/{category3depth[0]}/{category4depth}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
-            write_file_path = bucket_path + write_file_path
-            merged_df.to_parquet(write_file_path, storage_options=aws_storage_options)
-
 if __name__ == "__main__":
     main()
     
