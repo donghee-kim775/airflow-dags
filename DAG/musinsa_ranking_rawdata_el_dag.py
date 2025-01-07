@@ -20,7 +20,7 @@ with DAG(
     default_args=DEFAULT_DAG.default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
-    start_date=datetime(2025, 01, 01, tzinfo=local_tz),
+    start_date=datetime(2025, 1, 1, tzinfo=local_tz),
     catchup=False,
     tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
 ) as dag:
