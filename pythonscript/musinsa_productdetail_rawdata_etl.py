@@ -10,7 +10,7 @@ import os
 from datetime import datetime, timedelta
 import json
 
-from pythonscript.modules.config import musinsa_config, aws_config
+from modules.config import musinsa_config, aws_config
 
 def mapping_2depth_kor(depth2category):
     if depth2category == 'top':

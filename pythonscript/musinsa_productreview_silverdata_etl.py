@@ -8,7 +8,7 @@ import requests
 import pandas as pd
 import pyarrow.fs as fs
 
-from pythonscript.modules.config import musinsa_config
+from modules.config import musinsa_config
 
 url = "https://goods.musinsa.com/api2/review/v1/view/list"
 

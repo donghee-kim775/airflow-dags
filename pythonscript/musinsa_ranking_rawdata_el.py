@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import argparse
 
 from modules.s3_validate import connect_s3, validate_and_upload_s3_file
-from pythonscript.modules.config import Musinsa_Config
+from modules.config import Musinsa_Config
 
 # url
 url = "https://api.musinsa.com/api2/hm/v2/pans/ranking/sections/199?"
