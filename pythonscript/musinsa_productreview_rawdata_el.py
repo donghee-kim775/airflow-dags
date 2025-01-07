@@ -3,6 +3,7 @@ import json
 import re
 import random
 import time
+import threading
 
 import requests
 import pyarrow.fs as fs
@@ -11,9 +12,11 @@ from modules.config import Musinsa_Config
 
 import modules.s3_module as s3_module
 
-url = "https://goods.musinsa.com/api2/review/v1/view/list"
+LIST_SIZE = 10
 
-params = {
+URL = "https://goods.musinsa.com/api2/review/v1/view/list"
+
+PARAMS = {
     "page" : 0,
     "pageSize" : 20,
     "sort" : "new",
@@ -22,16 +25,22 @@ params = {
     "isExperience" : "false"
 }
 
-today_date = Musinsa_Config.today_date
+TODAY_DATE = Musinsa_Config.today_date
 
-bronze_bucket = "project4-raw-data"
 
-def el_productreview(product_id, s3_key):
-    params["goodsNo"] = product_id
-    response = requests.get(url, headers=Musinsa_Config.HEADERS, params=params)
-    data = response.json()['data']
-    
-    s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
+def porductid_list_iterable(iterable):
+    for i in range(0, len(iterable), LIST_SIZE):
+        yield iterable[i:i + LIST_SIZE]
+
+def el_productreview(product_id_list,key):
+    bronze_bucket = "project4-raw-data"
+    for product_id in product_id_list:
+        s3_key = key + f"{product_id}.json"
+        PARAMS["goodsNo"] = product_id
+        time.sleep(0.5)
+        response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
+        data = response.json()['data']
+        s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
         
 def main():
     # argument
@@ -46,7 +55,7 @@ def main():
     
     # product_id list 불러오기
     silver_bucket = "project4-silver-data/"
-    file_key = f"{today_date}/Musinsa/RankingData/{category3depth}/"
+    file_key = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth}/"
     
     s3 = s3_module.connect_s3fs()
     
@@ -64,12 +73,11 @@ def main():
             temp_ids = s3_module.get_product_ids(directory.path)
             product_ids += temp_ids
         
-        for product_id in set(product_ids):
-            output_path = f"{today_date}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/{product_id}.json"
-            el_productreview(product_id, output_path)
+        for product_list in porductid_list_iterable(product_ids):
+            key = f"{TODAY_DATE}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/"        
+            t = threading.Thread(target=el_productreview, args=(product_list, key))
+            t.start()
             
-            time.sleep(random.uniform(0.5, 1.0))
-
 if __name__ == "__main__":
     main()
     
