@@ -1,7 +1,8 @@
 import argparse
 import json
-import os
 import re
+import random
+import time
 
 import requests
 import pyarrow.fs as fs
@@ -67,5 +68,8 @@ def main():
             output_path = f"{today_date}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/{product_id}.json"
             el_productreview(product_id, output_path)
             
+            time.sleep(random.uniform(0.5, 1.0))
+
 if __name__ == "__main__":
     main()
+    
