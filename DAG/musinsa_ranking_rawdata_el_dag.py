@@ -3,15 +3,16 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
-from pendulumn import timezone
+
+from datetime import datetime
+import pendulum
 
 from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 from modules.config import DEFAULT_DAG
 
 import json
 
-#
-KST = timezone("Asia/Seoul")
+local_tz = pendulum.timezone("Asia/Seoul")
 
 # DAG 정의
 with DAG(
@@ -19,7 +20,7 @@ with DAG(
     default_args=DEFAULT_DAG.default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
-    start_date=days_ago(1, tzinfo=KST),
+    start_date=datetime(2025, 01, 01, tzinfo=local_tz),
     catchup=False,
     tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
 ) as dag:
