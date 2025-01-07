@@ -115,7 +115,7 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
         }
         
         json_data = json.dumps(data, ensure_ascii=False)
-        s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
+        s3_module.upload_json_to_s3(bronze_bucket, s3_key, json_data)
     
 def main():
     # argment parsing
