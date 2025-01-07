@@ -5,7 +5,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta, datetime
 
-from musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
+from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
 
 # DAG 기본 설정
 default_args = {

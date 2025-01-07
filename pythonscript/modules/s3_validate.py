@@ -7,13 +7,15 @@ import json
 import logging
 from pyarrow import fs
 
+from modules.config import AWS_Config
+
 # connection to s3
 def connect_s3():
     s3_client = boto3.client(
         's3', 
-        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-        region_name='ap-northeast-2'
+        aws_access_key_id=AWS_Config.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_Config.AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_Config.REGION
     )
     return s3_client
 
@@ -53,19 +55,14 @@ def validate_and_upload_s3_file(s3_client, bucket_name, s3_key, json_data):
 
 # product_id 추출
 def get_product_ids(bucket_path, file_key):
-    aws_storage_options = {
-        "key" : os.getenv('AWS_ACCESS_KEY_ID'),
-        "secret" : os.getenv('AWS_SECRET_ACCESS_KEY')
-    }
     file_path = bucket_path + file_key
-    
-    df = pd.read_parquet(file_path, storage_options=aws_storage_options)
+    df = pd.read_parquet(file_path, storage_options=AWS_Config.AWS_STORAGE_OPTIONS)
     return df['product_id'].tolist()
 
 def get_file_list(path):
     s3 = fs.S3FileSystem(
-        access_key=os.getenv('AWS_ACCESS_KEY_ID'),
-        secret_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+        access_key=AWS_Config.AWS_ACCESS_KEY_ID,
+        secret_key=AWS_Config.AWS_SECRET_ACCESS_KEY,
     )
     fs = fs.FileSelector(base_dir=path, recursive=True)
     files = s3.get_file_info(fs)

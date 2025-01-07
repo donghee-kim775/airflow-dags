@@ -7,19 +7,11 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 from kubernetes.client import models as k8s
 
-from musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 
 import json
 
-# DAG 기본 설정
-default_args = {
-    'owner': 'ehdgml7755@cu.ac.kr',
-    'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 24,
-    'retry_delay': timedelta(minutes=30),
-}
+
 
 with DAG(
     dag_id='Musinsa_Productdetail_RawData_EL_DAG',

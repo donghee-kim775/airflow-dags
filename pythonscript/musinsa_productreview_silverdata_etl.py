@@ -8,16 +8,9 @@ import requests
 import pandas as pd
 import pyarrow.fs as fs
 
-url = "https://goods.musinsa.com/api2/review/v1/view/list"
+from pythonscript.modules.config import musinsa_config
 
-headers = {
-    "accept": "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br, zstd",
-    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-    "origin": "https://www.musinsa.com",
-    "referer": "https://www.musinsa.com/",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-}
+url = "https://goods.musinsa.com/api2/review/v1/view/list"
 
 params = {
     "page" : 0,
@@ -34,7 +27,7 @@ bucket_path = "project4-silver-data/"
 
 def et_productreview(product_id):
     params["goodsNo"] = product_id
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=musinsa_config.headers, params=params)
     data = response.json()['data']
     
     review_data_list = []

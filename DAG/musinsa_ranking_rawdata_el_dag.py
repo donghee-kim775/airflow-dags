@@ -3,29 +3,23 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 from airflow.operators.dummy import DummyOperator
 
 from airflow.utils.dates import days_ago
-from datetime import timedelta
+from pendulumn import timezone
 
-from musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+from DAG.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+from modules.config import DEFAULT_DAG
 
 import json
 
-# DAG 기본 설정
-default_args = {
-    'owner': 'ehdgml7755@cu.ac.kr',
-    'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 24,
-    'retry_delay': timedelta(minutes=30),
-}
+#
+KST = timezone("Asia/Seoul")
 
 # DAG 정의
 with DAG(
     dag_id='Musinsa_Ranking_RawData_EL_DAG',
-    default_args=default_args,
+    default_args=DEFAULT_DAG.default_args,
     description='musinsa ranking raw data extraction and loading to s3',
     schedule_interval='0 0 * * *',
-    start_date=days_ago(1),
+    start_date=days_ago(1, tzinfo=KST),
     catchup=False,
     tags=['MUSINSA', 'RANKING_RAWDATA', 'EXTRACT', 'LOAD', 'S3', 'K8S']
 ) as dag:

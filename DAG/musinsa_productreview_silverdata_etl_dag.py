@@ -5,7 +5,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
 
-from musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
+from DAG.modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en, mapping3depth_en
 
 import json
 

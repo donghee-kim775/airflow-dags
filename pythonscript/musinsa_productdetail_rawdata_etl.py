@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 from bs4 import BeautifulSoup
-from s3_validate import get_product_ids
+from pythonscript.modules.s3_validate import get_product_ids
 
 import argparse
 import re
@@ -10,18 +10,7 @@ import os
 from datetime import datetime, timedelta
 import json
 
-# 헤더 설정
-headers = {
-    "accept": "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br, zstd",
-    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-    "origin": "https://www.musinsa.com",
-    "referer": "https://www.musinsa.com/",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"'
-}
+from pythonscript.modules.config import musinsa_config, aws_config
 
 def mapping_2depth_kor(depth2category):
     if depth2category == 'top':
@@ -44,7 +33,7 @@ def get_content_or_none(element):
 def et_product_detail(master_category, depth4category, product_id):
     url = f"https://www.musinsa.com/products/{product_id}"
     
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=musinsa_config.headers)
     
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -77,7 +66,7 @@ def et_product_detail(master_category, depth4category, product_id):
     }
     
     try:
-        response = requests.post(url, headers=headers, json=payload).json()
+        response = requests.post(url, headers=musinsa_config.headers, json=payload).json()
 
         like_counting = response['data']['contents']['items'][0]['count']
     except:

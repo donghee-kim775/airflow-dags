@@ -2,31 +2,16 @@ import logging
 import requests
 import os
 import json
-from s3_validate import connect_s3, validate_and_upload_s3_file
 
 from datetime import datetime, timedelta
 
 import argparse
 
-# s3 connect
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-region_name='ap-northeast-2'
-
-s3_client = connect_s3(aws_access_key_id, aws_secret_access_key, region_name)
+from modules.s3_validate import connect_s3, validate_and_upload_s3_file
+from pythonscript.modules.config import Musinsa_Config
 
 # url
 url = "https://api.musinsa.com/api2/hm/v2/pans/ranking/sections/199?"
-
-# headers
-headers = {
-    "accept": "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br, zstd",
-    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-    "origin": "https://www.musinsa.com",
-    "referer": "https://www.musinsa.com/",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-}
 
 # params
 params = {
@@ -72,7 +57,7 @@ def main():
         
         for category4code, category4name in category3depth[1].items():
             params['categoryCode'] = category4code
-            response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=Musinsa_Config.HEADERS, params=params)
             
             if response.status_code == 200:
                 response_json = response.json()
@@ -81,7 +66,7 @@ def main():
             bucket_name = 'project4-raw-data'
             file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
     
-            validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
+            validate_and_upload_s3_file(connect_s3(), bucket_name, file_name, response_json)
   
 if __name__ == "__main__":
     main()
