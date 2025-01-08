@@ -65,7 +65,7 @@ def et_product1_detail(product_id):
         review_count = None
         review_avg_rating = None
     
-    image_tag = soup.find('meta', attrs={'property': 'og:image'})
+    image_tag = soup.find('meta', attrs={'property': 'og:image'})['content']
     
     return product_name, brand_name_kr, brand_name_en, original_price, final_price, discount_rate, review_count, review_avg_rating, image_tag
 
