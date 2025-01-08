@@ -39,7 +39,7 @@ def el_productreview(product_id_list,key):
         for product_id in product_id_list:
             s3_key = key + f"{product_id}_{sort_method}.json"
             PARAMS["goodsNo"] = product_id
-            time.sleep(0.5)
+            time.sleep(0.8)
             response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
             data = response.json()['data']
             s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
