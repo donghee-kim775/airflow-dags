@@ -53,7 +53,7 @@ def et_product1_detail(product_id):
 
     original_price = get_content_or_none(soup.find('meta', {'property': 'product:price:normal_price'}))
     final_price = get_content_or_none(soup.find('meta', {'property': 'product:price:amount'}))
-    discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:discount_rate'}))
+    discount_rate = get_content_or_none(soup.find('meta', {'property': 'product:price:sale_rate'}))
 
     try:
         # review_count, review_avg_ratin
