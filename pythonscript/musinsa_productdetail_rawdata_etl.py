@@ -119,8 +119,6 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
             "created_at": created_at,
         }
         
-        print(data)
-        
         json_data = json.dumps(data, ensure_ascii=False)
         s3_module.upload_json_to_s3(bronze_bucket, s3_key, json_data)
     
@@ -135,9 +133,6 @@ def main():
     sexual_data = json.loads(args.sexual)
     category_data = json.loads(args.category_data)
     
-    print(sexual_data)
-    print(category_data)
-
     category2depth = mapping_2depth_kor(category_data[0])
     
     for category_info in category_data[1]:
@@ -151,7 +146,7 @@ def main():
             
             for product_list in porductid_list_iterable(product_lists):
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
-                key = f"{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth}/{category4depth}/"
+                key = f"{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(target=et_product_detail, args = (master_category, category4depth, product_list, key))
                 t.start()
             
