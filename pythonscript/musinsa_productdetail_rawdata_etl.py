@@ -98,6 +98,8 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
         product_name, brand_name_kr, brand_name_en, original_price, final_price, discount_rate, review_count, review_avg_rating, image_tag = et_product1_detail(product_id)
         like_counting = et_product2_detail(product_id)
         
+        created_at = datetime.now().strftime('%Y-%m-%d')
+        
         # data => dict
         data = {
             "platform": 'Musinsa',
@@ -114,7 +116,7 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
             "review_avg_rating": review_avg_rating,
             "like_counting": like_counting,
             "image_src" : image_tag,
-            "created_at": datetime.now().strftime('%Y-%m-%d'),
+            "created_at": created_at,
         }
         
         print(data)
