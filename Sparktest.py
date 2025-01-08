@@ -7,7 +7,7 @@ if __name__ == "__main__":
         .appName("Example PySpark Job") \
         .getOrCreate()
 
-    print("PySpark job started!")
+    print("PySpark job started! ")
     
     # 간단한 작업 (예: 숫자 출력)
     data = spark.range(0, 100).toDF("number")
