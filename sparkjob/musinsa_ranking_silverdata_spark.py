@@ -1,21 +1,30 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, FloatType, IntegerType, DateType
+from pyspark.sql.functions import to_date
 from pyspark.sql.functions import col, explode, lit
 
 from pyspark.conf import SparkConf
-from datetime import datetime, timedelta
+from datetime import datetime
 
-import logging
-import argparse
+import os
+import pendulum
 
 from modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS, mapping_2depth_kor
+
+# 오늘 날짜 - 날짜 path
+LOCAL_TZ = pendulum.timezone("Asia/Seoul")
+    
+TODAY_DATE = pendulum.now(tz=LOCAL_TZ).to_date_string()
 
 def create_spark_session():
     # SparkConf 설정
     conf = SparkConf()
-    conf.set("spark.hadoop.fs.s3a.impl")
-    conf.set("spark.hadoop.fs.s3a.access.key")
-    conf.set("spark.hadoop.fs.s3a.secret.key",)
+    conf.set("spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version", 2)
+    conf.set("spark.hadoop.fs.s3a.committer.magic.enabled", "true")
+    conf.set("fs.s3a.committer.name", "magic")
+    conf.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+    conf.set("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID"))
+    conf.set("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
     conf.set("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")  # 리전 엔드포인트 수정
     conf.set("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain")
     conf.set("spark.executor.memory", "4g")
@@ -32,13 +41,13 @@ def making_ranking_table(spark, json_path, master_category_code, today_date):
         temp_df = (
             df.select(explode(col("data.modules")[i]["items"]).alias("item"))
             .select(
-                col("item.id").cast("bigint").alias("product_id"),
+                col("item.id").cast("int").alias("product_id"),
                 col("item.info.onClickBrandName.eventLog.ga4.payload.index").cast("int").alias("ranking")
             )
         )
-        temp_df = temp_df.withColumn("category", lit(master_category_code).cast("string"))
+        temp_df = temp_df.withColumn("master_category_name", lit(master_category_code).cast("string"))
         temp_df = temp_df.withColumn("platform", lit("musinsa").cast("string"))
-        temp_df = temp_df.withColumn("date", lit(today_date).cast("string"))
+        temp_df = temp_df.withColumn("created_at", to_date(lit(today_date), 'yyyy-MM-dd'))
         
         if items_df is None:
             items_df = temp_df
@@ -54,9 +63,6 @@ def making_ranking_table(spark, json_path, master_category_code, today_date):
 
 def main():
     spark = create_spark_session()
-
-    # 오늘 날짜 - 날짜 path
-    today_date = (datetime.now()).strftime("%Y-%m-%d")
 
     for sexual_dct in SEXUAL_CATEGORY_DYNAMIC_PARAMS:
         # category1depth(성별) 추출
@@ -81,19 +87,17 @@ def main():
                     file_name = f"{category3depth}/{sexual}_{category2depth}_{category3depth}_{category4depth}"
                     
                     # input - filepath 조합
-                    input_path = f"s3a://project4-raw-data/{today_date}/Musinsa/RankingData/{file_name}.json"
+                    input_path = f"s3a://project4-raw-data/{TODAY_DATE}/Musinsa/RankingData/{file_name}.json"
                 
                     # output - filepath 조합
-                    table_output_path = f"s3a://project4-silver-data/{today_date}/Musinsa/RankingData/{file_name}.parquet"
-                    productids_output_path = f"s3a://project4-silver-data/{today_date}/Musinsa/RankingData/{file_name}.json"
+                    table_output_path = f"s3a://project4-silver-data/{TODAY_DATE}/Musinsa/RankingData/{file_name}.parquet"
                     
                     master_category_code = f"{sexual}-{category2depth}-{category3depth}"
-                    
-                    cleaned_df = making_ranking_table(spark, input_path ,master_category_code, today_date)
-                    product_ids_df = cleaned_df.select("product_id")
+                    print(f"Processing {master_category_code}-{category4depth}")
+                    cleaned_df = making_ranking_table(spark, input_path ,master_category_code, TODAY_DATE)
                     
                     cleaned_df.write.mode("overwrite").parquet(table_output_path)
-                    product_ids_df.write.mode("overwrite").json(productids_output_path)
                     
 if __name__ == "__main__":
     main()
+    

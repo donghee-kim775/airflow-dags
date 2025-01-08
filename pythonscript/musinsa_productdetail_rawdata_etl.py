@@ -103,8 +103,8 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
         # data => dict
         data = {
             "platform": 'Musinsa',
-            "master_category": master_category,
-            "small_category": depth4category,
+            "master_category_name": master_category,
+            "small_category_name": depth4category,
             "product_id": product_id,
             "product_name": product_name,
             "brand_name_kr": brand_name_kr,
