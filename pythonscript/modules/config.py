@@ -14,9 +14,9 @@ class Musinsa_Config:
         "sec-ch-ua-platform": '"Windows"'
     }
     
-    local_tz = pendulum.timezone("Asia/Seoul")
+    LOCAL_TZ = pendulum.timezone("Asia/Seoul")
     
-    today_date = pendulum.now(tz=local_tz).to_date_string()
+    TODAY_DATE = pendulum.now(tz=LOCAL_TZ).to_date_string()
     
 class AWS_Config:
     AWS_ACCESS_KEY_ID=os.getenv('AWS_ACCESS_KEY_ID')

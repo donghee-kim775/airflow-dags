@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from modules.config import Musinsa_Config
 import modules.s3_module as s3_module
 
-TODAY_DATE = Musinsa_Config.today_date
+TODAY_DATE = Musinsa_Config.TODAY_DATE
 
 LIST_SIZE = 10
 
