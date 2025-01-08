@@ -151,7 +151,7 @@ def main():
             
             for product_list in porductid_list_iterable(product_lists):
                 master_category = f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
-                key = f"{TODAY_DATE}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/"
+                key = f"{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth}/{category4depth}/"
                 t = threading.Thread(target=et_product_detail, args = (master_category, category4depth, product_list, key))
                 t.start()
             
