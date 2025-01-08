@@ -90,7 +90,7 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
     for product_id in product_id_list:
         bronze_bucket = "project4-raw-data"
         s3_key = key + f"{product_id}.json"
-        time.sleep(0.5)
+        time.sleep(0.8)
         
         print(f"product_id : {product_id}")
         
