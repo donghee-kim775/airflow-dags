@@ -69,6 +69,7 @@ def main():
         directories = [file for file in files if file.type == fs.FileType.Directory and directory_pattern.match(file.path)]
         
         product_ids = []
+
         for directory in directories:
             temp_ids = s3_module.get_product_ids(directory.path)
             product_ids += temp_ids
