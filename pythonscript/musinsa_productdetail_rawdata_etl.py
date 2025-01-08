@@ -91,6 +91,9 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
         bronze_bucket = "project4-raw-data"
         s3_key = key + f"{product_id}.json"
         time.sleep(0.5)
+        
+        print(f"product_id : {product_id}")
+        
         # request api
         product_name, brand_name_kr, brand_name_en, original_price, final_price, discount_rate, review_count, review_avg_rating, image_tag = et_product1_detail(product_id)
         like_counting = et_product2_detail(product_id)
