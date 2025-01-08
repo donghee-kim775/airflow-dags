@@ -18,12 +18,13 @@ URL = "https://goods.musinsa.com/api2/review/v1/view/list"
 
 PARAMS = {
     "page" : 0,
-    "pageSize" : 20,
-    "sort" : "new",
+    "pageSize" : 30,
     "myFilter" : "false",
     "hasPhoto" : "false",
     "isExperience" : "false"
 }
+
+SORT = ['goods_est_desc', 'goods_est_asc']
 
 TODAY_DATE = Musinsa_Config.today_date
 
@@ -33,13 +34,15 @@ def porductid_list_iterable(iterable):
 
 def el_productreview(product_id_list,key):
     bronze_bucket = "project4-raw-data"
-    for product_id in product_id_list:
-        s3_key = key + f"{product_id}.json"
-        PARAMS["goodsNo"] = product_id
-        time.sleep(0.5)
-        response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
-        data = response.json()['data']
-        s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
+    for sort_method in SORT:
+        PARAMS["sort"] = sort_method
+        for product_id in product_id_list:
+            s3_key = key + f"{product_id}_{sort_method}.json"
+            PARAMS["goodsNo"] = product_id
+            time.sleep(0.5)
+            response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
+            data = response.json()['data']
+            s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
         
 def main():
     # argument
