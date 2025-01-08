@@ -25,8 +25,8 @@ PARAMS = {
 }
 
 SORT = ['goods_est_desc', 'goods_est_asc']
-# Musinsa_Config.today_date
-TODAY_DATE = "2025-01-08"
+
+TODAY_DATE = Musinsa_Config.today_date
 
 def porductid_list_iterable(iterable):
     for i in range(0, len(iterable), LIST_SIZE):
